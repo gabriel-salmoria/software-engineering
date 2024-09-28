@@ -8,7 +8,7 @@ class Jogador(tk.Frame):
     def __init__(self, master: tk.Widget, nome: str):
         super().__init__(master)
         self.nome = nome
-        self.cor = random.choice(["red", "blue", "green", "orange", "purple"])
+        self.cor = random.choice(["red", "blue", "green", "orange"])
         self.criar_jogador()
 
     def criar_jogador(self) -> None:

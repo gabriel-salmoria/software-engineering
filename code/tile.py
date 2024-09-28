@@ -25,9 +25,8 @@ import random
 #       outros elementos, como a cor de fundo.
 
 
-
 class Tile(tk.Label):
-    def __init__(self, master, numero: int, tamanho: int, linha: int, coluna: int):
+    def __init__(self, master, numero: int, tamanho: int, linha: int, coluna: int, parent, interface):
         super().__init__(
             master=master,
             text=numero,
@@ -46,6 +45,9 @@ class Tile(tk.Label):
         self.tamanho = tamanho
         self.linha = linha
         self.coluna = coluna
+        self.parent = parent  # Stores the initial parent (Mesa or Rack)
+        self.master = master
+        self.interface = interface
 
         self.start_x = 0
         self.start_y = 0
@@ -56,12 +58,11 @@ class Tile(tk.Label):
             width=tamanho,
             height=tamanho
         )
-
+        self.no_liberar(tk.Event())
 
     def no_click(self, evento: tk.Event) -> None:
         self.start_x = evento.x
         self.start_y = evento.y
-
 
     def no_arrastar(self, evento: tk.Event) -> None:
         x = self.winfo_x() - self.start_x + evento.x
@@ -71,21 +72,51 @@ class Tile(tk.Label):
 
 
     def no_liberar(self, evento: tk.Event) -> None:
+        x, y = self.winfo_x(), self.winfo_y()
+
+        new_parent = self.detectar_novo_parent(x, y)
+
+        if new_parent == 'rack':
+            self.parent = self.interface.rack
+        if new_parent == 'table':
+            self.parent = self.interface.mesa_principal
+
+
+        # Calculate the new position for the tile
         coluna_mais_proxima = round((self.winfo_x() - 10) / self.tamanho)
         linha_mais_proxima = round((self.winfo_y() - 10) / self.tamanho)
 
         novo_x = coluna_mais_proxima * self.tamanho + 10
         novo_y = linha_mais_proxima * self.tamanho + 10
 
-        if 0 <= coluna_mais_proxima < 20 and 0 <= linha_mais_proxima < 10:
-            self.place(x=novo_x, y=novo_y)
+        if new_parent == '':
+            self.place(
+                x=self.coluna * self.tamanho + self.parent.offset[0],
+                y=self.linha * self.tamanho + self.parent.offset[1]
+            )
+
+        if new_parent == 'rack':
+            self.place(x=novo_x-10, y=novo_y+15)
             self.linha, self.coluna = linha_mais_proxima, coluna_mais_proxima
 
-        else:
-            self.place(
-                x=self.coluna * self.tamanho + 10,
-                y=self.linha * self.tamanho + 10
-            )
-        
+        if new_parent == 'mesa':
+            self.place(x=novo_x-10, y=novo_y+15)
+            self.linha, self.coluna = linha_mais_proxima, coluna_mais_proxima
+                
+
         self.lift()
+
+
+    def detectar_novo_parent(self, x, y):
+        # Check if the coordinates are within the bounds of the Mesa
+        mesa_bounds = self.interface.mesa_principal.rect_bounds
+        rack_bounds = self.interface.rack.rect_bounds
+
+        if (mesa_bounds[0] <= x <= mesa_bounds[2]) and (mesa_bounds[1] <= y <= mesa_bounds[3]):
+            return 'mesa' 
+
+        elif (rack_bounds[0] <= x <= rack_bounds[2]) and (rack_bounds[1] <= y <= rack_bounds[3]):
+            return 'rack'
+
+        return '' 
 

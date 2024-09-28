@@ -22,35 +22,44 @@ from tile import Tile
 #       eventualmente, quando tivermos um real gerenciador de tiles (Baralho).
 
 
-class Rack(tk.Frame):
-    def __init__(self, master: tk.Tk, linhas: int = 5, colunas: int = 10, tamanho_tile: int = 50):
-        super().__init__(master)
+class Rack:
+    def __init__(self, master, canvas: tk.Canvas, linhas: int = 5, colunas: int = 10, tamanho_tile: int = 50, interface=None):
+        self.canvas = canvas
         self.tamanho_tile = tamanho_tile
         self.linhas = linhas
         self.colunas = colunas
+        self.master = master
+        self.interface = interface
+        self.rect_bounds = [310, 610, 760, 810]
+        self.offset = 0, +25
         self.criar_rack()
 
-    def criar_rack(self) -> None:
-        self.canvas = tk.Canvas(
-            master=self,
-            width=self.tamanho_tile * self.colunas + 20,
-            height=self.tamanho_tile * self.linhas + 20,
-            bg="lightgray"
-        )
 
-        self.canvas.pack(padx=10, pady=10)
+    def criar_rack(self):
+        canvas_width = int(self.canvas.cget("width"))
+        canvas_height = int(self.canvas.cget("height"))
 
+        # Calculate the width and height of the rack
+        rack_width = self.tamanho_tile * self.colunas + 15
+        rack_height = self.tamanho_tile * self.linhas + 15
+
+        # Calculate x offset to center the rack horizontally
+        x_offset = (canvas_width - rack_width) // 2
+
+        # Set the y position to be at the bottom of the canvas
+        y_offset = canvas_height - rack_height - 20  # Add a margin from the bottom
+
+        # Create the rack rectangle at the centered bottom position
         self.canvas.create_rectangle(
-            5,
-            5,
-            self.tamanho_tile * self.colunas + 15,
-            self.tamanho_tile * self.linhas + 15,
+            x_offset,
+            y_offset,
+            x_offset + rack_width,
+            y_offset + rack_height,
             outline="black",
             width=5
         )
 
-        """" Parte desnecessária, colocada aqui só pra demonstração. """
-
+    def criar_tiles(self):
         numero_tile = 1
         for linha in range(self.linhas):
             for coluna in range(self.colunas):
@@ -59,12 +68,15 @@ class Rack(tk.Frame):
                         master=self.canvas,
                         numero=numero_tile,
                         tamanho=self.tamanho_tile,
-                        linha=linha,
-                        coluna=coluna
+                        linha=linha+12,
+                        coluna=coluna+6,
+                        parent=self,
+                        interface=self.interface
                     )
                     tile.place(
-                        x=coluna * self.tamanho_tile + 10,
-                        y=linha * self.tamanho_tile + 10
+                        x=290 + coluna * self.tamanho_tile + 10,
+                        y=615 + linha * self.tamanho_tile + 10  # Adjust Y based on Rack's offset
                     )
                     numero_tile += 1
 
+        
