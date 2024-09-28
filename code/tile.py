@@ -45,8 +45,7 @@ class Tile(tk.Label):
         self.tamanho = tamanho
         self.linha = linha
         self.coluna = coluna
-        self.parent = parent  # Stores the initial parent (Mesa or Rack)
-        self.master = master
+        self.parent = parent
         self.interface = interface
 
         self.start_x = 0
@@ -58,7 +57,6 @@ class Tile(tk.Label):
             width=tamanho,
             height=tamanho
         )
-        self.no_liberar(tk.Event())
 
     def no_click(self, evento: tk.Event) -> None:
         self.start_x = evento.x
@@ -70,53 +68,53 @@ class Tile(tk.Label):
         self.place(x=x, y=y)
         self.lift()
 
-
     def no_liberar(self, evento: tk.Event) -> None:
         x, y = self.winfo_x(), self.winfo_y()
 
         new_parent = self.detectar_novo_parent(x, y)
 
-        if new_parent == 'rack':
-            self.parent = self.interface.rack
-        if new_parent == 'table':
-            self.parent = self.interface.mesa_principal
-
-
-        # Calculate the new position for the tile
-        coluna_mais_proxima = round((self.winfo_x() - 10) / self.tamanho)
-        linha_mais_proxima = round((self.winfo_y() - 10) / self.tamanho)
-
-        novo_x = coluna_mais_proxima * self.tamanho + 10
-        novo_y = linha_mais_proxima * self.tamanho + 10
-
-        if new_parent == '':
+        if new_parent is None or self.verifica_colisao(new_parent):
             self.place(
                 x=self.coluna * self.tamanho + self.parent.offset[0],
                 y=self.linha * self.tamanho + self.parent.offset[1]
             )
+        else:
 
-        if new_parent == 'rack':
-            self.place(x=novo_x-10, y=novo_y+15)
+            self.parent.tiles.remove(self)
+            self.parent = new_parent
+            self.parent.tiles.append(self)
+
+            coluna_mais_proxima = round((self.winfo_x() - 10) / self.tamanho)
+            linha_mais_proxima = round((self.winfo_y() - 10) / self.tamanho)
+
+            novo_x = coluna_mais_proxima * self.tamanho + 10
+            novo_y = linha_mais_proxima * self.tamanho + 10
+
+            self.place(x=novo_x - 10, y=novo_y + 15)
             self.linha, self.coluna = linha_mais_proxima, coluna_mais_proxima
 
-        if new_parent == 'mesa':
-            self.place(x=novo_x-10, y=novo_y+15)
-            self.linha, self.coluna = linha_mais_proxima, coluna_mais_proxima
-                
+    def verifica_colisao(self, novo_parent):
+        """ Verifica se o tile está sendo largado em cima de outro tile. """
+        tiles = novo_parent.tiles
 
-        self.lift()
+        coluna_mais_proxima = round((self.winfo_x() - 10) / self.tamanho)
+        linha_mais_proxima = round((self.winfo_y() - 10) / self.tamanho)
 
+        for tile in tiles:
+            if tile != self:
+                if tile.linha == linha_mais_proxima and tile.coluna == coluna_mais_proxima:
+                    return True
+
+        return False  # Sem colisão
 
     def detectar_novo_parent(self, x, y):
-        # Check if the coordinates are within the bounds of the Mesa
         mesa_bounds = self.interface.mesa_principal.rect_bounds
         rack_bounds = self.interface.rack.rect_bounds
 
         if (mesa_bounds[0] <= x <= mesa_bounds[2]) and (mesa_bounds[1] <= y <= mesa_bounds[3]):
-            return 'mesa' 
+            return self.interface.mesa_principal
 
         elif (rack_bounds[0] <= x <= rack_bounds[2]) and (rack_bounds[1] <= y <= rack_bounds[3]):
-            return 'rack'
+            return self.interface.rack
 
-        return '' 
-
+        return None

@@ -23,9 +23,10 @@ class Mesa:
         self.tamanho_tile = tamanho_tile
         self.linhas = linhas
         self.colunas = colunas
+        self.tiles = []
         self.master = master
-        self.rect_bounds = [50, 50, 1000, 480]
-        self.offset = -5, -300
+        self.rect_bounds = [90, 50, 1280, 480]
+        self.offset = 0, 25
         self.criar_matriz()
 
     def criar_matriz(self):
@@ -36,7 +37,7 @@ class Mesa:
         mesa_height = self.tamanho_tile * self.linhas - 15
 
         # Calculate x offset to center the mesa horizontally
-        x_offset = (canvas_width - mesa_width) // 2
+        x_offset = (canvas_width - mesa_width) // 2 
         y_offset = 60  # Add a margin from the top
 
         # Create the mesa rectangle at the centered top position

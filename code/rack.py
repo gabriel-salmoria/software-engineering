@@ -30,8 +30,9 @@ class Rack:
         self.colunas = colunas
         self.master = master
         self.interface = interface
-        self.rect_bounds = [310, 610, 760, 810]
+        self.rect_bounds = [430, 700, 930, 930]
         self.offset = 0, +25
+        self.tiles = []
         self.criar_rack()
 
 
@@ -60,6 +61,7 @@ class Rack:
         )
 
     def criar_tiles(self):
+        tiles = []
         numero_tile = 1
         for linha in range(self.linhas):
             for coluna in range(self.colunas):
@@ -68,15 +70,18 @@ class Rack:
                         master=self.canvas,
                         numero=numero_tile,
                         tamanho=self.tamanho_tile,
-                        linha=linha+12,
-                        coluna=coluna+6,
+                        linha=linha+14,
+                        coluna=coluna+9,
                         parent=self,
                         interface=self.interface
                     )
                     tile.place(
-                        x=290 + coluna * self.tamanho_tile + 10,
-                        y=615 + linha * self.tamanho_tile + 10  # Adjust Y based on Rack's offset
+                        x=440 + coluna * self.tamanho_tile + 10,
+                        y=715 + linha * self.tamanho_tile + 10  # Adjust Y based on Rack's offset
                     )
                     numero_tile += 1
+                    tiles.append(tile)
+
+        self.tiles = tiles
 
         

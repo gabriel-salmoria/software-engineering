@@ -12,14 +12,14 @@ class Interface(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Rummikub")
-        self.geometry("1200x800")
+        self.geometry("1400x800")
         self.resizable(False, False)
 
         # Shared canvas for both Mesa and Rack
         self.canvas = tk.Canvas(
             master=self,
-            width=1100,
-            height=900,
+            width=1400,
+            height=1000,
             bg="white"
         )
         self.canvas.pack(anchor="s")
@@ -39,7 +39,7 @@ class Interface(tk.Tk):
             master=self,
             canvas=self.canvas,
             linhas=10,
-            colunas=20,
+            colunas=25,
             tamanho_tile=50
         )
 
@@ -50,7 +50,7 @@ class Interface(tk.Tk):
             colunas=10,
             tamanho_tile=50,
             interface=self
-            )
+        )
 
         self.cronometro = Cronometro(
             master=self,
