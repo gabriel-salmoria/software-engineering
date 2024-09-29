@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from tile import Tile
+from interface_peca import InterfacePeca
 
 # EM CASO DE ALTERAÇÃO DO CÓDIGO, MODIFIQUE ESSA DOCUMENTAÇÃO SOBRE GRANDES MUDANÇAS.
 
@@ -22,10 +22,10 @@ from tile import Tile
 #       eventualmente, quando tivermos um real gerenciador de tiles (Baralho).
 
 
-class Rack:
-    def __init__(self, master, canvas: tk.Canvas, linhas: int = 5, colunas: int = 10, tamanho_tile: int = 50, interface=None):
+class InterfaceSuportePecas:
+    def __init__(self, master, canvas: tk.Canvas, linhas: int = 5, colunas: int = 10, tamanho_peca: int = 50, interface=None):
         self.canvas = canvas
-        self.tamanho_tile = tamanho_tile
+        self.tamanho_peca = tamanho_peca
         self.linhas = linhas
         self.colunas = colunas
         self.master = master
@@ -41,8 +41,8 @@ class Rack:
         canvas_height = int(self.canvas.cget("height"))
 
         # Calculate the width and height of the rack
-        rack_width = self.tamanho_tile * self.colunas + 15
-        rack_height = self.tamanho_tile * self.linhas + 15
+        rack_width = self.tamanho_peca * self.colunas + 15
+        rack_height = self.tamanho_peca * self.linhas + 15
 
         # Calculate x offset to center the rack horizontally
         x_offset = (canvas_width - rack_width) // 2
@@ -60,26 +60,26 @@ class Rack:
             width=5
         )
 
-    def criar_tiles(self):
+    def criar_pecas(self):
         tiles = []
-        numero_tile = 1
+        numero_peca = 1
         for linha in range(self.linhas):
             for coluna in range(self.colunas):
-                if numero_tile <= 14:
-                    tile = Tile(
+                if numero_peca <= 14:
+                    tile = InterfacePeca(
                         master=self.canvas,
-                        numero=numero_tile,
-                        tamanho=self.tamanho_tile,
+                        numero=numero_peca,
+                        tamanho=self.tamanho_peca,
                         linha=linha+14,
                         coluna=coluna+9,
                         parent=self,
                         interface=self.interface
                     )
                     tile.place(
-                        x=440 + coluna * self.tamanho_tile + 10,
-                        y=715 + linha * self.tamanho_tile + 10  # Adjust Y based on Rack's offset
+                        x=440 + coluna * self.tamanho_peca + 10,
+                        y=715 + linha * self.tamanho_peca + 10  # Adjust Y based on Rack's offset
                     )
-                    numero_tile += 1
+                    numero_peca += 1
                     tiles.append(tile)
 
         self.tiles = tiles

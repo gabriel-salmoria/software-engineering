@@ -17,7 +17,7 @@ from tkinter import messagebox
 
 
 
-class Cronometro(tk.Label):
+class InterfaceCronometro(tk.Label):
     def __init__(self, master: tk.Tk, tempo_contagem: int):
         super().__init__(
             master=master,

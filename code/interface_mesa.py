@@ -17,10 +17,10 @@ import tkinter as tk
 #       tamanho de cada tile.
 
 
-class Mesa:
-    def __init__(self, master, canvas: tk.Canvas, linhas: int = 10, colunas: int = 20, tamanho_tile: int = 50):
+class InterfaceMesa:
+    def __init__(self, master, canvas: tk.Canvas, linhas: int = 10, colunas: int = 20, tamanho_peca: int = 50):
         self.canvas = canvas
-        self.tamanho_tile = tamanho_tile
+        self.tamanho_peca = tamanho_peca
         self.linhas = linhas
         self.colunas = colunas
         self.tiles = []
@@ -33,8 +33,8 @@ class Mesa:
         canvas_width = int(self.canvas.cget("width"))
 
         # Calculate the width and height of the mesa
-        mesa_width = self.tamanho_tile * self.colunas + 15
-        mesa_height = self.tamanho_tile * self.linhas - 15
+        mesa_width = self.tamanho_peca * self.colunas + 15
+        mesa_height = self.tamanho_peca * self.linhas - 15
 
         # Calculate x offset to center the mesa horizontally
         x_offset = (canvas_width - mesa_width) // 2 

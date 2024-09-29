@@ -25,7 +25,7 @@ import random
 #       outros elementos, como a cor de fundo.
 
 
-class Tile(tk.Label):
+class InterfacePeca(tk.Label):
     def __init__(self, master, numero: int, tamanho: int, linha: int, coluna: int, parent, interface):
         super().__init__(
             master=master,
@@ -109,12 +109,12 @@ class Tile(tk.Label):
 
     def detectar_novo_parent(self, x, y):
         mesa_bounds = self.interface.mesa_principal.rect_bounds
-        rack_bounds = self.interface.rack.rect_bounds
+        rack_bounds = self.interface.suporte_pecas.rect_bounds
 
         if (mesa_bounds[0] <= x <= mesa_bounds[2]) and (mesa_bounds[1] <= y <= mesa_bounds[3]):
             return self.interface.mesa_principal
 
         elif (rack_bounds[0] <= x <= rack_bounds[2]) and (rack_bounds[1] <= y <= rack_bounds[3]):
-            return self.interface.rack
+            return self.interface.suporte_pecas
 
         return None

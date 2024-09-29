@@ -4,7 +4,7 @@ import random
 
 # Isso aqui é só um elemento da interface, deve ser mudado de nome depois.
 
-class Jogador(tk.Frame):
+class InterfaceJogador(tk.Frame):
     def __init__(self, master: tk.Widget, nome: str):
         super().__init__(master)
         self.nome = nome
