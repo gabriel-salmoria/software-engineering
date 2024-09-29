@@ -62,7 +62,7 @@ class Interface(tk.Tk):
 
         self.botao = tk.Button(
             master=self,
-            text="Passar vez/Comprar Carta",
+            text="Passar vez / Comprar Peça",
             command=self.no_botao_click
         )
         self.botao.place(relx=0.95, rely=0.95, anchor="center")
