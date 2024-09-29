@@ -77,6 +77,8 @@ class Interface(tk.Tk):
         # Create the Game menu
         game_menu = tk.Menu(menubar, tearoff=0)
         game_menu.add_command(label="Iniciar Jogo", command=self.iniciar_jogo)
+        game_menu.add_command(label="Reiniciar Jogo", command=self.reiniciar)
+
         game_menu.add_command(label="Sair", command=self.quit)
 
         # Add the Game menu to the menubar
@@ -91,6 +93,9 @@ class Interface(tk.Tk):
 
     def no_botao_click(self) -> None:
         messagebox.showinfo("Botão Clicado", "Você clicou no botão!")
+
+    def reiniciar(self):
+        pass
 
 
 if __name__ == "__main__":
