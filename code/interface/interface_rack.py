@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from interface_peca import InterfacePeca
+from interface.interface_piece import InterfacePiece
 
 # EM CASO DE ALTERAÇÃO DO CÓDIGO, MODIFIQUE ESSA DOCUMENTAÇÃO SOBRE GRANDES MUDANÇAS.
 
@@ -22,35 +22,41 @@ from interface_peca import InterfacePeca
 #       eventualmente, quando tivermos um real gerenciador de tiles (Baralho).
 
 
-class InterfaceSuportePecas:
-    def __init__(self, master, canvas: tk.Canvas, linhas: int = 5, colunas: int = 10, tamanho_peca: int = 50, interface=None):
-        self.canvas = canvas
-        self.tamanho_peca = tamanho_peca
-        self.linhas = linhas
-        self.colunas = colunas
+class InterfaceRack:
+    def __init__(
+            self,
+            master,
+            canvas: tk.Canvas,
+            rows: int = 5,
+            columns: int = 10,
+            piece_size: int = 50,
+            interface=None
+        ):
         self.master = master
         self.interface = interface
+
+        self.canvas = canvas
+        self.piece_size = piece_size
+        self.rows = rows
+        self.columns = columns
+
         self.rect_bounds = [430, 700, 930, 930]
         self.offset = 0, +25
+
         self.tiles = []
-        self.criar_rack()
+        self.create_rack()
 
 
-    def criar_rack(self):
+    def create_rack(self):
         canvas_width = int(self.canvas.cget("width"))
         canvas_height = int(self.canvas.cget("height"))
 
-        # Calculate the width and height of the rack
-        rack_width = self.tamanho_peca * self.colunas + 15
-        rack_height = self.tamanho_peca * self.linhas + 15
+        rack_width = self.piece_size * self.columns + 15
+        rack_height = self.piece_size * self.rows + 15
 
-        # Calculate x offset to center the rack horizontally
         x_offset = (canvas_width - rack_width) // 2
+        y_offset = canvas_height - rack_height - 20
 
-        # Set the y position to be at the bottom of the canvas
-        y_offset = canvas_height - rack_height - 20  # Add a margin from the bottom
-
-        # Create the rack rectangle at the centered bottom position
         self.canvas.create_rectangle(
             x_offset,
             y_offset,
@@ -60,28 +66,31 @@ class InterfaceSuportePecas:
             width=5
         )
 
-    def criar_pecas(self):
+    def create_pieces(self):
         tiles = []
-        numero_peca = 1
-        for linha in range(self.linhas):
-            for coluna in range(self.colunas):
-                if numero_peca <= 14:
-                    tile = InterfacePeca(
+        piece_number = 1
+
+        for row in range(self.rows):
+            for column in range(self.columns):
+
+                if piece_number <= 14:
+
+                    tile = InterfacePiece(
                         master=self.canvas,
-                        numero=numero_peca,
-                        tamanho=self.tamanho_peca,
-                        linha=linha+14,
-                        coluna=coluna+9,
                         parent=self,
-                        interface=self.interface
+                        interface=self.interface,
+                        number=piece_number,
+                        size=self.piece_size,
+                        row=row+14,
+                        column=column+9,
                     )
+
                     tile.place(
-                        x=440 + coluna * self.tamanho_peca + 10,
-                        y=715 + linha * self.tamanho_peca + 10  # Adjust Y based on Rack's offset
+                        x=440 + column*self.piece_size + 10,
+                        y=715 + row*self.piece_size + 10
                     )
-                    numero_peca += 1
+
+                    piece_number += 1
                     tiles.append(tile)
 
         self.tiles = tiles
-
-        

@@ -17,11 +17,11 @@ from tkinter import messagebox
 
 
 
-class InterfaceCronometro(tk.Label):
-    def __init__(self, master: tk.Tk, tempo_contagem: int):
+class InterfaceChronometer(tk.Label):
+    def __init__(self, master: tk.Tk, max_time: int):
         super().__init__(
             master=master,
-            text=f"Tempo: {tempo_contagem}",
+            text=f"Tempo: {max_time}",
             font=("Arial", 18),
             bg="white",
             borderwidth=2,
@@ -29,19 +29,24 @@ class InterfaceCronometro(tk.Label):
         )
 
         self.master = master
-        self.tempo_contagem = tempo_contagem
+        self.max_time = max_time
+        self.curr_time = max_time
+
         self.pack(pady=10)
 
         # Inicializa a contagem até zero.
-        self.atualizar_relogio()
+        self.update_clock()
 
 
-    def atualizar_relogio(self) -> None:
-        if self.tempo_contagem > 0:
-            self.config(text=f"Tempo: {self.tempo_contagem}")
-            self.tempo_contagem -= 1
-            self.after(1000, self.atualizar_relogio)
+    def update_clock(self) -> None:
+        if self.curr_time > 0:
+            self.config(text=f"Tempo: {self.curr_time}")
+            self.curr_time -= 1
+            self.after(1000, self.update_clock)
         else:
             self.config(text="Tempo: 0")
             messagebox.showinfo("Tempo Acabou!", "Cronômetro chegou a zero")
+
+            self.curr_time = self.max_time
+            self.update_clock()
 
