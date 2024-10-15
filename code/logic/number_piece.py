@@ -4,12 +4,9 @@ from interface.interface_piece import InterfacePiece
 class NumberPiece(Piece):
     def __init__(
             self,
-            piece: InterfacePiece,
-            table,
             number: int,
             color: str,
         ):
-        super().__init__(piece, table)
 
         self.number = number
         self.color = color

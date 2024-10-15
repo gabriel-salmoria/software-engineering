@@ -66,31 +66,31 @@ class InterfaceRack:
             width=5
         )
 
-    def create_pieces(self):
+    def create_pieces(self, pieces):
         tiles = []
-        piece_number = 1
+        i = 0
 
         for row in range(self.rows):
             for column in range(self.columns):
 
-                if piece_number <= 14:
-
+                if i < len(pieces):
                     tile = InterfacePiece(
                         master=self.canvas,
                         parent=self,
                         interface=self.interface,
-                        number=piece_number,
+                        piece = pieces[i],
+                        number=pieces[i].number,
                         size=self.piece_size,
                         row=row+14,
                         column=column+9,
                     )
 
                     tile.place(
-                        x=440 + column*self.piece_size + 10,
-                        y=715 + row*self.piece_size + 10
+                        x=self.rect_bounds[0]+20 + column*self.piece_size,
+                        y=self.rect_bounds[1]+25 + row*self.piece_size
                     )
 
-                    piece_number += 1
+                    i += 1
                     tiles.append(tile)
 
         self.tiles = tiles

@@ -8,8 +8,11 @@ from interface.interface_rack import InterfaceRack
 
 
 class Interface(tk.Tk):
-    def __init__(self):
+    def __init__(self, game, player):
         super().__init__()
+        self.game = game
+        self.player = player
+
         self.title("Rummikub")
         self.geometry("1800x1000")
         self.resizable(False, False)
@@ -67,11 +70,11 @@ class Interface(tk.Tk):
             columns=10,
             piece_size=50
         )
-        self.player_rack.create_pieces()
+        self.player_rack.create_pieces(self.player.pieces)
 
         self.chronometer = InterfaceChronometer(
             master=self,
-            max_time=30
+            max_time=60
         )
         self.chronometer.place(relx=0.5, y=20, anchor="center")
 
@@ -93,7 +96,3 @@ class Interface(tk.Tk):
 
     def restart_game(self) -> None:
         messagebox.showinfo("Reiniciar Jogo", "O jogo será reiniciado!")
-
-if __name__ == "__main__":
-    app = Interface()
-    app.mainloop()

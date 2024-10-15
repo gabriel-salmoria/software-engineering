@@ -31,6 +31,7 @@ class InterfacePiece(tk.Label):
             master,
             parent,
             interface,
+            piece,
             number: int,
             size: int,
             row: int,
@@ -40,7 +41,7 @@ class InterfacePiece(tk.Label):
         super().__init__(
             master=master,
             text=number,
-            bg=random.choice(["lightblue", "lightgreen", "lightcoral", "lightyellow"]),
+            bg=piece.color,
             borderwidth=1,
             relief="solid",
             font=("Arial", 24),
@@ -61,6 +62,7 @@ class InterfacePiece(tk.Label):
 
         self.start_x = 0
         self.start_y = 0
+        self.piece = piece
 
         self.place(
             x=column * size + 10,
