@@ -8,11 +8,8 @@ from interface.interface_suporte_pecas import InterfaceSuporte
 
 
 class Interface(tk.Tk):
-    def __init__(self, jogo, jogador):
+    def __init__(self):
         super().__init__()
-        self.jogo = jogo
-        self.jogador = jogador
-
         self.title("Rummikub")
         self.geometry("1800x1000")
         self.resizable(False, False)
@@ -36,7 +33,6 @@ class Interface(tk.Tk):
 
 
     def inicializar_elementos(self):
-
         self.canvas = tk.Canvas(
             master=self,
             width=1400,
@@ -70,7 +66,7 @@ class Interface(tk.Tk):
             colunas=10,
             tamanho_peca=50
         )
-        self.suporte_jogador.criar_pecas(self.jogador.pecas)
+        self.suporte_jogador.criar_pecas()
 
         self.cronometro = InterfaceCronometro(
             master=self,

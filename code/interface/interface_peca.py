@@ -1,4 +1,5 @@
 import tkinter as tk
+import random
 
 
 # Descrição:
@@ -30,7 +31,6 @@ class InterfacePeca(tk.Label):
             master,
             parent,
             interface,
-            peca,
             numero: int,
             tamanho: int,
             linha: int,
@@ -40,7 +40,7 @@ class InterfacePeca(tk.Label):
         super().__init__(
             master=master,
             text=numero,
-            bg=peca.cor,
+            bg=random.choice(['lightblue', 'lightcoral', 'lightyellow', 'lightgreen']),
             borderwidth=1,
             relief="solid",
             font=("Arial", 24),
@@ -61,7 +61,6 @@ class InterfacePeca(tk.Label):
 
         self.start_x = 0
         self.start_y = 0
-        self.peca = peca
 
         self.place(
             x=coluna * tamanho + 10,

@@ -1,3 +1,6 @@
-from logic.jogo import Jogo
+from interface.interface import Interface
 
-jogo = Jogo()
+
+interface = Interface()
+
+interface.mainloop()

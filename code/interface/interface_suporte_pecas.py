@@ -66,20 +66,19 @@ class InterfaceSuporte:
             width=5
         )
 
-    def criar_pecas(self, pecas):
+    def criar_pecas(self):
         tiles = []
-        i = 0
+        i = 1
 
         for linha in range(self.linhas):
             for coluna in range(self.colunas):
 
-                if i < len(pecas):
+                if i < 14:
                     tile = InterfacePeca(
                         master=self.canvas,
                         parent=self,
                         interface=self.interface,
-                        peca=pecas[i],
-                        numero=pecas[i].numero,
+                        numero=i,
                         tamanho=self.tamanho_peca,
                         linha=linha+14,
                         coluna=coluna+9,
