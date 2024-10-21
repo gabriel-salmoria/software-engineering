@@ -13,26 +13,26 @@ import tkinter as tk
 #   --- A Mesa é um tipo de tk.Frame, utilizando o método pack do tkinter.
 #
 #   --- Ela contém um canvas onde os tiles são desenhados, com dimensões 
-#       determinadas pelo número de rows e columns, assim como pelo 
+#       determinadas pelo número de linhas e colunas, assim como pelo 
 #       tamanho de cada tile.
 
 
-class InterfaceTable:
+class InterfaceMesa:
     def __init__(
             self,
             master,
             canvas: tk.Canvas,
-            rows: int = 10,
-            columns: int = 20,
-            piece_size: int = 50
+            linhas: int = 10,
+            colunas: int = 20,
+            tamanho_peca: int = 50
         ):
         self.master = master
 
         self.canvas = canvas
-        self.piece_size = piece_size
+        self.tamanho_peca = tamanho_peca
 
-        self.rows = rows
-        self.columns = columns
+        self.linhas = linhas
+        self.colunas = colunas
         self.tiles = []
 
         self.rect_bounds = [90, 50, 1280, 480]
@@ -44,8 +44,8 @@ class InterfaceTable:
         canvas_width = int(self.canvas.cget("width"))
 
         # Calculate the width and height of the table
-        table_width = self.piece_size * self.columns + 15
-        table_height = self.piece_size * self.rows - 15
+        table_width = self.tamanho_peca * self.colunas + 15
+        table_height = self.tamanho_peca * self.linhas - 15
 
         # Calculate x offset to center the table horizontally
         x_offset = (canvas_width - table_width) // 2 

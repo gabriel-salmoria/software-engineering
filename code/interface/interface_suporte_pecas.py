@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from interface.interface_piece import InterfacePiece
+from interface.interface_peca import InterfacePeca
 
 # EM CASO DE ALTERAÇÃO DO CÓDIGO, MODIFIQUE ESSA DOCUMENTAÇÃO SOBRE GRANDES MUDANÇAS.
 
@@ -22,37 +22,37 @@ from interface.interface_piece import InterfacePiece
 #       eventualmente, quando tivermos um real gerenciador de tiles (Baralho).
 
 
-class InterfaceRack:
+class InterfaceSuporte:
     def __init__(
             self,
             master,
             canvas: tk.Canvas,
-            rows: int = 5,
-            columns: int = 10,
-            piece_size: int = 50,
+            linhas: int = 5,
+            colunas: int = 10,
+            tamanho_peca: int = 50,
             interface=None
         ):
         self.master = master
         self.interface = interface
 
         self.canvas = canvas
-        self.piece_size = piece_size
-        self.rows = rows
-        self.columns = columns
+        self.tamanho_peca = tamanho_peca
+        self.linhas = linhas
+        self.colunas = colunas
 
         self.rect_bounds = [430, 700, 930, 930]
         self.offset = 0, +25
 
         self.tiles = []
-        self.create_rack()
+        self.criar_rack()
 
 
-    def create_rack(self):
+    def criar_rack(self):
         canvas_width = int(self.canvas.cget("width"))
         canvas_height = int(self.canvas.cget("height"))
 
-        rack_width = self.piece_size * self.columns + 15
-        rack_height = self.piece_size * self.rows + 15
+        rack_width = self.tamanho_peca * self.colunas + 15
+        rack_height = self.tamanho_peca * self.linhas + 15
 
         x_offset = (canvas_width - rack_width) // 2
         y_offset = canvas_height - rack_height - 20
@@ -66,28 +66,28 @@ class InterfaceRack:
             width=5
         )
 
-    def create_pieces(self, pieces):
+    def criar_pecas(self, pecas):
         tiles = []
         i = 0
 
-        for row in range(self.rows):
-            for column in range(self.columns):
+        for linha in range(self.linhas):
+            for coluna in range(self.colunas):
 
-                if i < len(pieces):
-                    tile = InterfacePiece(
+                if i < len(pecas):
+                    tile = InterfacePeca(
                         master=self.canvas,
                         parent=self,
                         interface=self.interface,
-                        piece = pieces[i],
-                        number=pieces[i].number,
-                        size=self.piece_size,
-                        row=row+14,
-                        column=column+9,
+                        peca=pecas[i],
+                        numero=pecas[i].numero,
+                        tamanho=self.tamanho_peca,
+                        linha=linha+14,
+                        coluna=coluna+9,
                     )
 
                     tile.place(
-                        x=self.rect_bounds[0]+20 + column*self.piece_size,
-                        y=self.rect_bounds[1]+25 + row*self.piece_size
+                        x=self.rect_bounds[0]+20 + coluna*self.tamanho_peca,
+                        y=self.rect_bounds[1]+25 + linha*self.tamanho_peca
                     )
 
                     i += 1

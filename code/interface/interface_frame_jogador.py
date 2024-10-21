@@ -4,20 +4,20 @@ import random
 
 # Isso aqui é só um elemento da interface, deve ser mudado de nome depois.
 
-class InterfacePlayerFrame(tk.Frame):
+class InterfaceFrameJogador(tk.Frame):
 
-    def __init__(self, master: tk.Widget, name: str):
+    def __init__(self, master: tk.Widget, nome: str):
         super().__init__(master)
 
-        self.name = name
-        self.color = random.choice(["red", "blue", "green", "orange"])
-        self.create_player()
+        self.nome = nome
+        self.cor = random.choice(["red", "blue", "green", "orange"])
+        self.criar_jogador()
 
 
-    def create_player(self) -> None:
+    def criar_jogador(self) -> None:
         label = tk.Label(
             master=self,
-            text=self.name,
+            text=self.nome,
             font=("Arial", 16)
         )
         label.pack(pady=5)
@@ -26,7 +26,7 @@ class InterfacePlayerFrame(tk.Frame):
             master=self,
             width=50,
             height=50,
-            bg=self.color
+            bg=self.cor
         )
         quadrado.pack()
 
