@@ -9,10 +9,11 @@ from tkinter import simpledialog
 class JogadorActor(DogPlayerInterface):
     def __init__(self):
         self.interface = Interface(self)
-        self.player_name = simpledialog.askstring(title="Nome do Jogador", prompt="Qual o seu nome?")
+        self.nome_jogador = simpledialog.askstring(title="Nome do Jogador", prompt="Qual o seu nome?")
         self.dog_server_interface = DogActor()
-        message = self.dog_server_interface.initialize(self.player_name, self)
+        message = self.dog_server_interface.initialize(self.nome_jogador, self)
         messagebox.showinfo(message=message)
+        self.interface.atualizar_elementos()
         self.interface.mainloop()
 
     def start_match(self):

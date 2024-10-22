@@ -15,12 +15,12 @@ class InterfaceFrameJogador(tk.Frame):
 
 
     def criar_jogador(self) -> None:
-        label = tk.Label(
+        self.label = tk.Label(
             master=self,
             text=self.nome,
             font=("Arial", 16)
         )
-        label.pack(pady=5)
+        self.label.pack(pady=5)
 
         quadrado = tk.Canvas(
             master=self,
@@ -30,3 +30,8 @@ class InterfaceFrameJogador(tk.Frame):
         )
         quadrado.pack()
 
+    def atualizar_nome(self, nome):
+        self.nome = nome
+        self.label.config(text=nome)
+
+    

@@ -8,16 +8,16 @@ from interface.interface_suporte_pecas import InterfaceSuporte
 
 
 class Interface(tk.Tk):
-    def __init__(self, player_actor):
+    def __init__(self, jogador_actor):
         super().__init__()
         self.title("Rummikub")
         self.geometry("1800x1000")
         self.resizable(False, False)
 
+        self.player_actor = jogador_actor
+
         self.create_menu_bar()
         self.inicializar_elementos()
-        self.player_actor = player_actor
-
 
 
     def create_menu_bar(self):
@@ -45,11 +45,11 @@ class Interface(tk.Tk):
         self.jogador_frame = tk.Frame(master=self)
         self.jogador_frame.place(relx=0.02, rely=0.2, anchor="nw")
 
-        jogador1 = InterfaceFrameJogador(master=self.jogador_frame, nome="Jogador 1")
-        jogador1.pack(pady=10)
+        self.jogador1 = InterfaceFrameJogador(master=self.jogador_frame, nome="Jogador 1")
+        self.jogador1.pack(pady=10)
 
-        jogador2= InterfaceFrameJogador(master=self.jogador_frame, nome="Jogador 2")
-        jogador2.pack(pady=10)
+        self.jogador2= InterfaceFrameJogador(master=self.jogador_frame, nome="Jogador 2")
+        self.jogador2.pack(pady=10)
 
         self.mesa_principal = InterfaceMesa(
             master=self,
@@ -81,6 +81,10 @@ class Interface(tk.Tk):
             command=self.botao_click
         )
         self.botao.place(relx=0.95, rely=0.95, anchor="center")
+
+
+    def atualizar_elementos(self):
+        self.jogador1.atualizar_nome(self.player_actor.nome_jogador)
 
 
     def iniciar_jogo(self) -> None:
