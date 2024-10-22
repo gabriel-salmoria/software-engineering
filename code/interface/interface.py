@@ -8,7 +8,7 @@ from interface.interface_suporte_pecas import InterfaceSuporte
 
 
 class Interface(tk.Tk):
-    def __init__(self):
+    def __init__(self, player_actor):
         super().__init__()
         self.title("Rummikub")
         self.geometry("1800x1000")
@@ -16,6 +16,7 @@ class Interface(tk.Tk):
 
         self.create_menu_bar()
         self.inicializar_elementos()
+        self.player_actor = player_actor
 
 
 
@@ -83,7 +84,7 @@ class Interface(tk.Tk):
 
 
     def iniciar_jogo(self) -> None:
-        messagebox.showinfo("Iniciar Jogo", "O jogo vai começar!")
+        self.player_actor.start_match()
 
 
     def botao_click(self) -> None:
