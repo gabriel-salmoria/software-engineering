@@ -20,7 +20,6 @@ class JogadorActor(DogPlayerInterface):
         start_status = self.dog_server_interface.start_match(2)
         message = start_status.get_message()
         messagebox.showinfo(message=message)
-        self.dog_server_interface.send_move({'nome_jogador':self.nome_jogador})
 
     def start_game(self):
         print('hello')
@@ -28,10 +27,6 @@ class JogadorActor(DogPlayerInterface):
     def receive_start(self, start_status):
         message = start_status.get_message()
         messagebox.showinfo(message=message)
-        print(type(message))
-
-        jogador2 = self.dog_server_interface.receive_move('nome_jogador')
-        print(jogador2)
 
     def receive_withdrawal_notification(self):
         pass
