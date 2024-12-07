@@ -4,19 +4,9 @@ class Mesa:
     def __init__(self):
         self.linhas = 20
         self.colunas = 50
-        self.pecas_dispostas = [[ 1 for _ in range(self.colunas)] for _ in range(self.linhas)] 
-
-        self.estado_anterior = None
+        self.pecas_dispostas = [[ None for _ in range(self.colunas)] for _ in range(self.linhas)] 
         self.atualizando = False
         self.valido = True
-
-
-    def receber_movimento(self, peca: Peca, x: int, y: int):
-        pass
-
-
-    def atualizar_peca(self, peca: Peca):
-        pass
 
 
     def validar_mesa(self) -> bool:
@@ -108,7 +98,3 @@ class Mesa:
                 continue
 
         return True
-
-
-    def retorna_estado_anterior(self):
-        pass

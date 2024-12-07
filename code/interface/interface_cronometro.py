@@ -31,9 +31,9 @@ class InterfaceCronometro(tk.Label):
         self.master = master
         self.tempo_maximo = tempo_maximo
         self.tempo_atual = tempo_maximo
+        self.jogo = None
 
         self.pack(pady=10)
-        self.atualizar_cronometro()
 
 
     def iniciar_cronometro(self):
@@ -42,11 +42,17 @@ class InterfaceCronometro(tk.Label):
 
 
     def atualizar_cronometro(self) -> None:
-        if self.tempo_atual > 0:
-            self.config(text=f"Tempo: {self.tempo_atual}")
-            self.tempo_atual -= 1
-            self.after(1000, self.atualizar_cronometro)
+        if self.jogo.turnoAtual:
+            if self.tempo_atual > 0:
+                self.config(text=f"Tempo: {self.tempo_atual}")
+                self.tempo_atual -= 1
+                self.after(1000, self.atualizar_cronometro)
+
+            else:
+                self.config(text="Tempo: 0")
+                print("passei")
+                # self.jogo.listaJogadores[0].passar_vez()
 
         else:
-            self.config(text="Tempo: 0")
-            messagebox.showinfo("Tempo Acabou!", "Cronômetro chegou a zero")
+            self.config(text=f"Tempo: {self.tempo_maximo}")
+

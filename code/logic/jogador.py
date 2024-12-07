@@ -1,4 +1,4 @@
-
+from interface.interface_peca import InterfacePeca
 
 class Jogador:
     def __init__(self, jogo):
@@ -16,6 +16,8 @@ class Jogador:
 
     def passar_vez(self):
         seu_turno = self.jogo.verificar_turno()
+        self.jogo.efetuar_passagem_vez()
+        return
 
         if seu_turno:
             jogada_valida = self.jogo.validar_jogada()
@@ -45,17 +47,57 @@ class Jogador:
         self.jogo.efetuar_passagem_vez()
 
 
+    def colocar_peca(self, peca, local, x: int, y: int):
+        valor, cor = peca.split("-")
+        pecas_dispostas= self.jogo.mesa.pecas_dispostas
+        print("coloquei peca")
 
-    def colocar_peca(self, peca: "Peca", x: int, y: int):
-        pass
-        
+        x, y = int(x), int(y)
+
+        if local == "mesa":
+            for i in range(len(pecas_dispostas)):
+                for j in range(len(pecas_dispostas[0])):
+                    peca = pecas_dispostas[i][j]
+
+                    if peca is None:
+                        continue
+
+                    if str(peca.valor) == valor and str(peca.cor) == cor:
+                        pecas_dispostas[i][j] = None
+                        pecas_dispostas[x][y] = peca
+                        peca.int.atualizar_posicao(local, x, y)
+                        return
+
+
+            for peca in self.pecasMao:
+                if str(peca.valor) == valor and str(peca.cor) == cor:
+                    self.pecasMao.remove(peca)
+                    if peca.int == None:
+                        interface = self.jogo.interface_jogador.interface
+                        mesa = interface.mesa_principal
+
+                        peca.int = InterfacePeca(
+                                master=mesa.canvas,
+                                parent=mesa,
+                                interface=interface,
+                                cor = peca.cor,
+                                numero=peca.valor,
+                                linha=y,
+                                coluna=x,
+                                )
+                        mesa.pecas.append(peca.int)
+
+                        peca.int.atualizar_posicao(local, x, y)
+                        pecas_dispostas[x][y] = peca
+                        return
+
 
     def receber_pecas(self, pecas: list):
         self.pecasMao = pecas
 
 
     def comprar_peca(self):
-        peca = self.jogo.banco_de_pecas.pegar_peca()
+        peca = self.jogo.banco_de_pecas.comprar_peca()
         self.pecasMao.append(peca)
 
 

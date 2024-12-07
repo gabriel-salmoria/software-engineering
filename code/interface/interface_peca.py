@@ -33,7 +33,6 @@ class InterfacePeca(tk.Label):
             interface,
             numero: int,
             cor: str,
-            tamanho: int,
             linha: int,
             coluna: int,
          ):
@@ -55,7 +54,7 @@ class InterfacePeca(tk.Label):
 
         self.numero = numero
         self.cor = cor
-        self.tamanho = tamanho
+        self.tamanho = 50
         self.linha = linha
         self.coluna = coluna
 
@@ -66,12 +65,11 @@ class InterfacePeca(tk.Label):
         self.start_y = 0
 
         self.place(
-            x=coluna * tamanho + 10,
-            y=linha * tamanho + 10,
-            width=tamanho,
-            height=tamanho
+            x=coluna * self.tamanho + 10,
+            y=linha * self.tamanho + 10,
+            width=self.tamanho,
+            height=self.tamanho
         )
-
 
 
     def no_click(self, evento: tk.Event) -> None:
@@ -88,13 +86,13 @@ class InterfacePeca(tk.Label):
         self.lift()
 
 
-
     def no_soltar(self, evento: tk.Event) -> None:
         x, y = self.winfo_x(), self.winfo_y()
+        turno = self.interface.player_actor.jogo.turnoAtual
 
         novo_local = self.detectar_caixa(x, y)
 
-        if novo_local is None or self.verificar_colisao(novo_local):
+        if novo_local is None or self.verificar_colisao(novo_local) or not turno:
             self.place(
                 x=self.coluna * self.tamanho + self.parent.offset[0],
                 y=self.linha * self.tamanho + self.parent.offset[1]
@@ -105,10 +103,12 @@ class InterfacePeca(tk.Label):
         self.efetuar_movimento()
 
 
+    # adicionado para que seja enviado o movimento de alguma forma.
+    # envia o "peca_movida"
     def efetuar_movimento(self):
         x, y = self.winfo_x(), self.winfo_y()
         novo_local = self.detectar_caixa(x, y)
-
+        actor = self.interface.player_actor
 
         self.parent.pecas.remove(self)
         self.parent = novo_local
@@ -124,10 +124,25 @@ class InterfacePeca(tk.Label):
         self.place(x=novo_x - 10, y=novo_y + 15)
         self.linha, self.coluna = proxima_linha, proxima_coluna
 
+        actor.jogo.listaJogadores[0].colocar_peca(
+            f"{self.numero}-{self.cor}",
+            "mesa",
+            str(proxima_coluna),
+            str(proxima_linha)
+        )
+
+        actor.dog_server_interface.send_move({
+            "match_status" : "fodase", # dog reclama se nao colocar isso, lixeira.
+            "tipo" : "peca_movida",
+            "peca" : f"{self.numero}-{self.cor}",
+            "local" : "mesa",
+            "x" : str(proxima_coluna),
+            "y" : str(proxima_linha),
+            })
 
 
+    # nao mudou
     def verificar_colisao(self, novo_local) -> bool:
-        """ Verify if the current tile has been placed into another tile. """
 
         tiles = novo_local.pecas
 
@@ -142,8 +157,8 @@ class InterfacePeca(tk.Label):
         return False
 
 
+    # vou colocar isso dentro do colisao dps
     def detectar_caixa(self, x: int, y: int):
-        """ Detect if the tile has been placed inside a correct area. """
 
         mesa_bounds = self.interface.mesa_principal.rect_bounds
         suporte_bounds = self.interface.suporte_jogador.rect_bounds
@@ -156,3 +171,19 @@ class InterfacePeca(tk.Label):
 
         return None
 
+
+    # recebo o movimento do jogador externo e preciso atualizar
+    # na interface para que a interfacePeca esteja correta
+    def atualizar_posicao(self, local, x, y):
+        self.parent.pecas.remove(self)
+
+        if local == "mesa":
+            self.parent = self.interface.mesa_principal
+        elif local == "suporte":
+            self.parent = self.interface.suporte_jogador
+
+        self.parent.pecas.append(self)
+        self.place(
+                x = x*self.tamanho + self.parent.offset[0],
+                y = y*self.tamanho + self.parent.offset[1]
+            )

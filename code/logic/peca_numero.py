@@ -1,7 +1,8 @@
+from logic.peca import Peca
 
+class PecaNumero(Peca):
+    def __init__(self, valor, cor):
+        self.valor = valor
+        self.cor = cor
+        self.int = None
 
-from Peca import Peca
-
-class PecaCoringa(Peca):
-    def __init__(self, tipoCoringa: int):
-        self.tipoCoringa = tipoCoringa

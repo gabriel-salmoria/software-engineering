@@ -1,17 +1,26 @@
 from logic.banco_de_pecas import BancoDePecas
+from logic.peca_numero import PecaNumero
+from interface.interface_mesa import InterfaceMesa
 from logic.mesa import Mesa
 from logic.jogador import Jogador
+from copy import copy
 
 class Jogo:
     def __init__(self, interface_jogador, cronometro):
         self.listaJogadores = [Jogador(self) for _ in range(2)]
         self.mesa = Mesa()
-        self.bancoDePecas = None
+        self.bancoDePecas = BancoDePecas(self)
         self.status_partida = 0
+        self.jogada_atual = None
+        self.estado_anterior = None
         self.turnoAtual = False
         self.cronometro = cronometro
+        self.cronometro.jogo = self
         self.interface_jogador = interface_jogador
 
+
+    def receber_estado_elementos(self):
+        pass
 
     def abandonar_partida(self):
         pass # TODO : terminar execucao do jogo.
@@ -25,16 +34,12 @@ class Jogo:
         pass
 
 
-    def receber_estado_elementos(self):
-        self.interface_jogador.interface.atualizar_elementos()
-        pass # TODO : nao sei oq fazer
-
-
     def verificar_turno(self) -> bool:
         if self.turnoAtual == 1:
             return True
 
         return False
+
 
     def receber_nome_vencedor(self) -> str:
         for jogador in self.listaJogadores:
@@ -44,18 +49,36 @@ class Jogo:
         return ""
 
 
+    # identifica e trata a jogada, tinham umas 2-3 funcoes que fariam a mesma
+    # coisa do que essa, acabei continuando com isso.
     def identificar_jogada(self, jogada):
         if jogada["tipo"] == "peca_movida":
-            peca = jogada["move"]["peca"]
-            x = jogada["move"]["x"]
-            y = jogada["move"]["y"]
-            self.listaJogadores[0].colocar_peca(peca, x, y)
+            peca, local = jogada["peca"], jogada["local"]
+            x, y = jogada["x"], jogada["y"]
+            
+            self.listaJogadores[1].colocar_peca(peca, local, x, y)
 
-        if jogada["tipo"] == "pecas_distribuidas":
+
+        elif jogada["tipo"] == "pecas_distribuidas":
+            self.pecas_distribuidas(jogada["pecas"])
             self.bancoDePecas.efetuar_distribuicao_pecas()
 
-        if jogada["tipo"] == "vez_passada":
+
+        elif jogada["tipo"] == "vez_passada":
             self.listaJogadores[0].efetuar_passagem_vez()
+            self.inverter_turno()
+            self.receber_estado_elementos()
+            self.cronometro.iniciar_cronometro()
+
+
+        elif jogada["tipo"] == "peca_comprada":
+            # obter o estado anterior.
+
+            self.listaJogadores[1].comprar_peca()
+            self.receber_estado_elementos()
+            self.inverter_turno()
+            self.cronometro.iniciar_cronometro()
+
 
         self.interface_jogador.interface.atualizar_elementos()
 
@@ -72,32 +95,32 @@ class Jogo:
 
 
 
-    def inicializar_jogo(self, players, local_player_id):
+    # de acordo com os diagramas, só tem o cronometro a mais ali.
+    def inicializar_jogo(self, players):
         for i in range(len(self.listaJogadores)):
-            self.listaJogadores[i].inicializar(players[i][2], players[i][2])
+            # inicializar os jogadores
+            self.listaJogadores[i].inicializar(players[i][0], players[i][2])
 
-        self.bancoDePecas = BancoDePecas(self)
+            # atualizar o quadradinho na interface
+            self.interface_jogador.interface.jogadores[i].label.config(text=players[i][0])
 
+        # definir a ordem de execucao
         if players[0][2] == "1":
             self.listaJogadores[0].atualizar_turno()
+            self.turnoAtual = True
+            self.cronometro.iniciar_cronometro()
         else:
-            self.listaJogadores[0].atualizar_turno()
+            self.listaJogadores[1].atualizar_turno()
 
-        estado = self.receber_estado_elementos()
-
-        move = {
-            "tipo" : "inicializar",
-            "estado" : estado
-        }
-
-        self.interface_jogador.send_move(move)
         self.interface_jogador.interface.atualizar_elementos()
 
 
+    # inutil ate agr
     def receber_status_partida(self):
         return self.status_partida
 
 
+    # inutil ate agr
     def reiniciar_jogo(self):
         info = []
 
@@ -117,23 +140,65 @@ class Jogo:
         self.mesa = Mesa()
         self.interface_jogador.interface.atualizar_elementos()
 
+
+    # 99% feito, só preciso conseguir salvar o estado
     def efetuar_passagem_vez(self):
-        pass # TODO : nao sei oq fazer
+        valido = self.validar_jogada()
+        dog = self.interface_jogador.dog_server_interface
+
+        if valido:
+
+            dog.send_move({
+                "match_status" : "fodase",
+                "tipo" : "vez_passada",
+                })
+
+        else:
+            # obtem o estado anterior.
+
+            self.listaJogadores[0].comprar_peca()
+            self.receber_estado_elementos()
+            self.inverter_turno()
+
+            dog.send_move({
+                "match_status" : "fodase",
+                "tipo" : "peca_comprada",
+                })
+
+        self.interface_jogador.interface.atualizar_elementos()
+
 
 
     def tempo_acabou(self):
         self.listaJogadores[0].passar_vez()
 
 
-    def peca_comprada(self, peca: "Peca"):
+    def peca_comprada(self, peca):
         self.bancoDePecas.pecas.remove(peca)
 
 
-    def pecas_distribuidas(self):
-        self.receber_estado_elementos()
-        self.interface_jogador.atualizar_estado()
+    # chamado pelo player remoto no receive move. apenas faz
+    # a alteracao na ordem das pecas
+    def pecas_distribuidas(self, string_codificada):
+        pecas = []
+        pecas_str = string_codificada.split(',')
+
+        # recebo as pecas de quem iniciou, dou aquela arrumada
+        # e depois distribuo as peças localmente no inicialiar_jogo
+        for i, peca_str in enumerate(pecas_str):
+            valor, cor = peca_str.split('-')
+            peca = PecaNumero(int(valor), cor)
+            
+            if i < 14:
+                pecas.append(peca)
+            elif i < 28:
+                pecas.insert(i - 14, peca)
+
+        self.bancoDePecas.pecas = pecas
 
 
+
+    # de acordo com diagrama
     def verificar_partida_encerrada(self):
         jog1 = self.listaJogadores[0].get_vencedor()
         jog2 = self.listaJogadores[1].get_vencedor()

@@ -19,56 +19,56 @@ class JogadorActor(DogPlayerInterface):
 
         self.interface.atualizar_elementos()
         self.jogo = Jogo(self, self.interface.cronometro)
-        self.interface.jogo = self.jogo
+        self.interface.jogo = self.jogo # cronometro precisa conseguir passar vez
 
         self.interface.mainloop()
 
 
-    def start_match(self):
+    def receive_move(self, a_move):
+        self.jogo.identificar_jogada(a_move)
 
+
+    # 99% de acordo com os diagramas
+    def start_match(self):
         status_jogo = self.jogo.receber_status_partida()
 
-        if (status_jogo == 2 or status_jogo == 3): # TODO : mudar (nao lembro o valor)
-            start_status = self.dog_server_interface.start_match(2)
-            code = start_status.get_code()
-            message = start_status.get_message()
+        if status_jogo == 2 or status_jogo == 3:
+            return
 
-            if code == 0 or code == 1:
-                messagebox.showinfo(message=message)
+        start_status = self.dog_server_interface.start_match(2)
+        code = start_status.get_code()
+        message = start_status.get_message()
 
-            elif code == 2:
-                players = start_status.get_players()
-                local_player_id = start_status.get_local_id()
-                self.jogo.inicializar_jogo(players, local_player_id)
+        if code == "0" or code == "1":
+            messagebox.showinfo(message=message)
+
+        elif code == "2":
+            players = start_status.get_players()
+
+            self.jogo.inicializar_jogo(players)
+            self.jogo.bancoDePecas.criar_baralho()
+
+            self.dog_server_interface.send_move(self.jogo.jogada_atual)
 
 
+    # de acordo com os diagramas
     def receive_start(self, start_status):
         message = start_status.get_message()
         messagebox.showinfo(message=message)
 
         players = start_status.get_players()
-        local_player_id = start_status.get_local_id()
-        players.reverse()
-
-        local_player_id = start_status.get_local_id()
-        self.jogo.inicializar_jogo(players, local_player_id)
-
-        self.atualizar_estado()
+        self.jogo.inicializar_jogo(players)
 
         self.interface.atualizar_elementos()
 
 
-
+    # nao faz nada ainda
     def receive_withdrawal_notification(self):
         self.jogo.abandonar_partida()
-        status_jogo = self.jogo.receber_estado_elementos()
 
 
-    def receive_move(self, a_move):
-        tipo_jogada = self.jogo.identificar_jogada(a_move)
-        # TODO : lidar com dog
-
-
+    # ta 80% de acordo com os diagramas, perceba q sequer faz sentido.
+    # nao continuei escrevendo pq claramente precisa ser mudada
     def atualizar_estado(self):
         part_terminada = self.jogo.verificar_partida_encerrada()
 
@@ -82,6 +82,8 @@ class JogadorActor(DogPlayerInterface):
 
         self.jogo.receber_estado_elementos()
 
+
+    # inutil ainda.
     def reiniciar_jogo(self):
         status_jogo = self.jogo.receber_status_partida()
 

@@ -26,7 +26,7 @@ class Interface(tk.Tk):
         menubar = tk.Menu(self)
         menu_jogo = tk.Menu(menubar, tearoff=0)
 
-        menu_jogo.add_command(label="Iniciar Jogo", command=self.player_actor.start_match)
+        menu_jogo.add_command(label="Iniciar Jogo", command=self.start_match)
         menu_jogo.add_command(label="Reiniciar Jogo", command=self.reiniciar_jogo)
         menu_jogo.add_command(label="Sair", command=self.quit)
 
@@ -69,7 +69,6 @@ class Interface(tk.Tk):
             colunas=10,
             tamanho_peca=50
         )
-        self.suporte_jogador.criar_pecas()
 
         self.cronometro = InterfaceCronometro(
             master=self,
@@ -98,8 +97,14 @@ class Interface(tk.Tk):
         for i in range(qtd_pecas_suporte):
             pecas_suporte[i].place()
 
+
+    def start_match(self):
+        self.player_actor.start_match()
+
+
     def reiniciar_jogo(self):
-        self.jogo.reiniciar_jogo
+        self.jogo.reiniciar_jogo()
+
 
     def passar_vez(self):
         self.jogo.listaJogadores[0].passar_vez()
