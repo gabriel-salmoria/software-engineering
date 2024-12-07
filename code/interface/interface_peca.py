@@ -32,6 +32,7 @@ class InterfacePeca(tk.Label):
             parent,
             interface,
             numero: int,
+            cor: str,
             tamanho: int,
             linha: int,
             coluna: int,
@@ -40,7 +41,7 @@ class InterfacePeca(tk.Label):
         super().__init__(
             master=master,
             text=numero,
-            bg=random.choice(['lightblue', 'lightcoral', 'lightyellow', 'lightgreen']),
+            bg=cor,
             borderwidth=1,
             relief="solid",
             font=("Arial", 24),
@@ -52,6 +53,8 @@ class InterfacePeca(tk.Label):
         self.bind("<B1-Motion>", self.no_arrastar)
         self.bind("<ButtonRelease-1>", self.no_soltar)
 
+        self.numero = numero
+        self.cor = cor
         self.tamanho = tamanho
         self.linha = linha
         self.coluna = coluna
@@ -99,9 +102,18 @@ class InterfacePeca(tk.Label):
 
             return
 
-        self.parent.tiles.remove(self)
+        self.efetuar_movimento()
+
+
+    def efetuar_movimento(self):
+        x, y = self.winfo_x(), self.winfo_y()
+        novo_local = self.detectar_caixa(x, y)
+
+
+        self.parent.pecas.remove(self)
         self.parent = novo_local
-        self.parent.tiles.append(self)
+        self.parent.pecas.append(self)
+
 
         proxima_coluna = round((self.winfo_x() - 10) / self.tamanho)
         proxima_linha = round((self.winfo_y() - 10) / self.tamanho)
@@ -117,7 +129,7 @@ class InterfacePeca(tk.Label):
     def verificar_colisao(self, novo_local) -> bool:
         """ Verify if the current tile has been placed into another tile. """
 
-        tiles = novo_local.tiles
+        tiles = novo_local.pecas
 
         proxima_coluna= round((self.winfo_x() - 10) / self.tamanho)
         proxima_linha = round((self.winfo_y() - 10) / self.tamanho)
@@ -143,3 +155,4 @@ class InterfacePeca(tk.Label):
             return self.interface.suporte_jogador
 
         return None
+

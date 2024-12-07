@@ -43,7 +43,7 @@ class InterfaceSuporte:
         self.rect_bounds = [430, 700, 930, 930]
         self.offset = 0, +25
 
-        self.tiles = []
+        self.pecas = []
         self.criar_rack()
 
 
@@ -78,6 +78,7 @@ class InterfaceSuporte:
                         master=self.canvas,
                         parent=self,
                         interface=self.interface,
+                        cor = "lightblue",
                         numero=i,
                         tamanho=self.tamanho_peca,
                         linha=linha+14,
@@ -92,4 +93,4 @@ class InterfaceSuporte:
                     i += 1
                     tiles.append(tile)
 
-        self.tiles = tiles
+        self.pecas = tiles

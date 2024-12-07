@@ -33,8 +33,11 @@ class InterfaceCronometro(tk.Label):
         self.tempo_atual = tempo_maximo
 
         self.pack(pady=10)
+        self.atualizar_cronometro()
 
-        # Inicializa a contagem até zero.
+
+    def iniciar_cronometro(self):
+        self.tempo_atual = self.tempo_maximo
         self.atualizar_cronometro()
 
 
@@ -43,10 +46,7 @@ class InterfaceCronometro(tk.Label):
             self.config(text=f"Tempo: {self.tempo_atual}")
             self.tempo_atual -= 1
             self.after(1000, self.atualizar_cronometro)
+
         else:
             self.config(text="Tempo: 0")
             messagebox.showinfo("Tempo Acabou!", "Cronômetro chegou a zero")
-
-            self.tempo_atual = self.tempo_maximo
-            self.atualizar_cronometro()
-

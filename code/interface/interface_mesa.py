@@ -33,7 +33,7 @@ class InterfaceMesa:
 
         self.linhas = linhas
         self.colunas = colunas
-        self.tiles = []
+        self.pecas = []
 
         self.rect_bounds = [90, 50, 1280, 480]
         self.offset = 0, 25
