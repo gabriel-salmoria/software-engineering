@@ -52,19 +52,20 @@ class Jogo:
 
 
     def traduzir_peca(self, peca):
-        nova = copy(peca)
+        valor, cor = peca.valor, peca.cor
+        nova = PecaNumero(valor, cor)
 
-        if nova.int is None:
+        if peca.int is None:
             return nova, None
 
-        if isinstance(nova.int.parent, InterfaceMesa):
+        if isinstance(peca.int.parent, InterfaceMesa):
             parent = "mesa"
         else:
             parent = "sup"
 
         nova_int = {
-            "linha": nova.int.linha,
-            "coluna": nova.int.coluna,
+            "linha": peca.int.linha,
+            "coluna": peca.int.coluna,
             "parent": parent
         }
 
@@ -194,7 +195,7 @@ class Jogo:
 
         elif jogada["tipo"] == "peca_comprada":
             self.reconstruir_estado()
-            self.listaJogadores[1].comprar_peca()
+            self.listaJogadores[1].pegar_peca()
             self.inverter_turno()
             self.cronometro.iniciar_cronometro()
 

@@ -30,7 +30,7 @@ class Mesa:
                     continue
 
                 return False
-            print("\n")
+
         return True
 
 

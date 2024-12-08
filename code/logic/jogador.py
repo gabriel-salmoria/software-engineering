@@ -94,6 +94,10 @@ class Jogador:
         peca = self.jogo.bancoDePecas.comprar_peca()
         self.pecasMao.append(peca)
 
+    def pegar_peca(self):
+        peca = self.jogo.bancoDePecas.pegar_peca()
+        self.pecasMao.append(peca)
+
 
     def inicializar(self, nome: str, cor: int):
         self.nome = nome
