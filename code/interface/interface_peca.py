@@ -86,12 +86,9 @@ class InterfacePeca(tk.Label):
 
 
     def no_soltar(self, evento: tk.Event) -> None:
-        x, y = self.winfo_x(), self.winfo_y()
         turno = self.interface.player_actor.jogo.turnoAtual
 
-        novo_local = self.detectar_caixa(x, y)
-
-        if novo_local is None or self.verificar_colisao(novo_local) or not turno:
+        if self.verificar_colisao() or not turno:
             self.place(
                 x=self.coluna * self.tamanho + self.parent.offset[0],
                 y=self.linha * self.tamanho + self.parent.offset[1]
@@ -102,11 +99,19 @@ class InterfacePeca(tk.Label):
         self.efetuar_movimento()
 
 
-    # adicionado para que seja enviado o movimento de alguma forma.
-    # envia o "peca_movida"
     def efetuar_movimento(self):
         x, y = self.winfo_x(), self.winfo_y()
-        novo_local = self.detectar_caixa(x, y)
+        mesa_bounds = self.interface.mesa_principal.rect_bounds
+        suporte_bounds = self.interface.suporte_jogador.rect_bounds
+
+        novo_local = None
+
+        if (mesa_bounds[0] <= x <= mesa_bounds[2]) and (mesa_bounds[1] <= y <= mesa_bounds[3]):
+            novo_local = self.interface.mesa_principal
+
+        elif (suporte_bounds[0] <= x <= suporte_bounds[2]) and (suporte_bounds[1] <= y <= suporte_bounds[3]):
+            novo_local = self.interface.suporte_jogador
+
         actor = self.interface.player_actor
 
         self.parent.pecas.remove(self)
@@ -145,8 +150,24 @@ class InterfacePeca(tk.Label):
             "y" : str(proxima_linha)
             })
 
-    # nao mudou
-    def verificar_colisao(self, novo_local) -> bool:
+
+
+    def verificar_colisao(self) -> bool:
+        x, y = self.winfo_x(), self.winfo_y()
+
+        mesa_bounds = self.interface.mesa_principal.rect_bounds
+        suporte_bounds = self.interface.suporte_jogador.rect_bounds
+
+        novo_local = None
+
+        if (mesa_bounds[0] <= x <= mesa_bounds[2]) and (mesa_bounds[1] <= y <= mesa_bounds[3]):
+            novo_local = self.interface.mesa_principal
+
+        elif (suporte_bounds[0] <= x <= suporte_bounds[2]) and (suporte_bounds[1] <= y <= suporte_bounds[3]):
+            novo_local = self.interface.suporte_jogador
+
+        if novo_local == None:
+            return True
 
         tiles = novo_local.pecas
 
@@ -154,26 +175,10 @@ class InterfacePeca(tk.Label):
         proxima_linha = round((self.winfo_y() - 10) / self.tamanho)
 
         for tile in tiles:
-            if tile != self:
-                if tile.linha == proxima_linha and tile.coluna == proxima_coluna:
-                    return True
+            if tile.linha == proxima_linha and tile.coluna == proxima_coluna:
+                return True
 
         return False
-
-
-    # vou colocar isso dentro do colisao dps
-    def detectar_caixa(self, x: int, y: int):
-
-        mesa_bounds = self.interface.mesa_principal.rect_bounds
-        suporte_bounds = self.interface.suporte_jogador.rect_bounds
-
-        if (mesa_bounds[0] <= x <= mesa_bounds[2]) and (mesa_bounds[1] <= y <= mesa_bounds[3]):
-            return self.interface.mesa_principal
-
-        elif (suporte_bounds[0] <= x <= suporte_bounds[2]) and (suporte_bounds[1] <= y <= suporte_bounds[3]):
-            return self.interface.suporte_jogador
-
-        return None
 
 
     # recebo o movimento do jogador externo e preciso atualizar
