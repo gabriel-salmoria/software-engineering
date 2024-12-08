@@ -107,4 +107,4 @@ class Interface(tk.Tk):
 
 
     def passar_vez(self):
-        self.jogo.listaJogadores[0].passar_vez()
+        self.jogo.efetuar_passagem_vez()

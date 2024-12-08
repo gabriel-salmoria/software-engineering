@@ -65,8 +65,8 @@ class InterfacePeca(tk.Label):
         self.start_y = 0
 
         self.place(
-            x=coluna * self.tamanho + 10,
-            y=linha * self.tamanho + 10,
+            x=coluna * self.tamanho,
+            y=linha * self.tamanho+25,
             width=self.tamanho,
             height=self.tamanho
         )
@@ -132,14 +132,13 @@ class InterfacePeca(tk.Label):
         )
 
         actor.dog_server_interface.send_move({
-            "match_status" : "fodase", # dog reclama se nao colocar isso, lixeira.
+            "match_status" : "fodase",
             "tipo" : "peca_movida",
             "peca" : f"{self.numero}-{self.cor}",
             "local" : "mesa",
             "x" : str(proxima_coluna),
-            "y" : str(proxima_linha),
+            "y" : str(proxima_linha)
             })
-
 
     # nao mudou
     def verificar_colisao(self, novo_local) -> bool:

@@ -21,8 +21,8 @@ class BancoDePecas:
             interface=interface,
             cor = peca.cor,
             numero=peca.valor,
-            linha=14 + i % 10,
-            coluna=9 + i // 10,
+            linha=14 + i // 10,
+            coluna=9 + i % 10,
         )
 
         int_peca.place(
@@ -34,11 +34,14 @@ class BancoDePecas:
         peca.int = int_peca
 
 
+
     def pegar_peca(self):
         peca = self.pecas[0]
         self.pecas.remove(peca)
 
         return peca
+
+
 
     # funcao que vai ser chamada quando o jogador realmente
     # passar a vez e der errado, precisa instanciar uma interfacePeca.
@@ -57,7 +60,8 @@ class BancoDePecas:
         valores = list(range(1, 14))
         cores = ['red', 'blue', 'green', 'yellow']
 
-        baralho = [PecaNumero(valor, cor) for valor in valores for cor in cores]
+        baralho = [PecaNumero(valor, cor) for valor in valores for cor in cores for _ in range(2)]
+        print(len(baralho))
         
         shuffle(baralho)
 
@@ -72,6 +76,7 @@ class BancoDePecas:
         }
 
         self.efetuar_distribuicao_pecas()
+
 
 
     # ta de acordo com os diagramas
@@ -91,4 +96,4 @@ class BancoDePecas:
             mao_jogador2.append(self.pegar_peca())
 
         self.jogo.listaJogadores[1].receber_pecas(mao_jogador2)
-
+        self.jogo.receber_estado_elementos()

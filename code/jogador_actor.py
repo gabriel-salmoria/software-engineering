@@ -47,6 +47,7 @@ class JogadorActor(DogPlayerInterface):
 
             self.jogo.inicializar_jogo(players)
             self.jogo.bancoDePecas.criar_baralho()
+            self.jogo.receber_estado_elementos()
 
             self.dog_server_interface.send_move(self.jogo.jogada_atual)
 
@@ -58,29 +59,11 @@ class JogadorActor(DogPlayerInterface):
 
         players = start_status.get_players()
         self.jogo.inicializar_jogo(players)
-
         self.interface.atualizar_elementos()
 
 
-    # nao faz nada ainda
     def receive_withdrawal_notification(self):
         self.jogo.abandonar_partida()
-
-
-    # ta 80% de acordo com os diagramas, perceba q sequer faz sentido.
-    # nao continuei escrevendo pq claramente precisa ser mudada
-    def atualizar_estado(self):
-        part_terminada = self.jogo.verificar_partida_encerrada()
-
-        if part_terminada:
-            nome_jogador = self.jogo.receber_nome_vencedor()
-
-        tipo_jogada = self.jogo.identificar_jogada()
-
-        if tipo_jogada == "vez_passada":
-            self.jogo.inverter_turno()
-
-        self.jogo.receber_estado_elementos()
 
 
     # inutil ainda.
@@ -89,7 +72,6 @@ class JogadorActor(DogPlayerInterface):
 
         if status_jogo == 2 or status_jogo == 6:
             self.reiniciar_jogo()
-            self.atualizar_estado()
 
 
 

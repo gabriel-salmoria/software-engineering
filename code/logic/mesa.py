@@ -10,12 +10,18 @@ class Mesa:
 
 
     def validar_mesa(self) -> bool:
-        for linha in range(len(self.pecas_dispostas)):
-            for coluna in range(len(self.pecas_dispostas[0])):
-                proximo_bloco, ret = self.obter_proximo_bloco(self.pecas_dispostas[linha], coluna)
+        for i in range(self.linhas):
+            for j in range(self.colunas):
+                proximo_bloco, ret = self.obter_proximo_bloco(self.pecas_dispostas[i], j)
 
-                if ret != -1:
-                    coluna = ret
+                if ret == -1:
+                    break
+
+
+                j = min(ret, len(self.pecas_dispostas[0]))
+
+                if len(proximo_bloco) < 3:
+                    return False
 
                 if (self.grupo_valido(proximo_bloco)):
                     continue
@@ -23,9 +29,8 @@ class Mesa:
                 elif (self.sequencia_valida(proximo_bloco)):
                     continue
 
-                else:
-                    return False
-
+                return False
+            print("\n")
         return True
 
 
@@ -44,6 +49,7 @@ class Mesa:
 
     def grupo_valido(self, bloco: list) -> bool:
         usou_coringa = False
+        numero_sequencia = bloco[0].valor
         cores = []
 
         for peca in range(len(bloco)):
@@ -54,6 +60,9 @@ class Mesa:
                     return False
 
                 continue
+
+            if bloco[peca].valor != numero_sequencia:
+                return False
 
             if bloco[peca].cor in cores:
                 return False
@@ -68,6 +77,7 @@ class Mesa:
         n_operando = 1
         cor_sequencia = bloco[0].cor
         peca_anterior = bloco[0].valor - 1
+
 
         for peca in range(len(bloco)):
             if bloco[peca].valor != -1:
