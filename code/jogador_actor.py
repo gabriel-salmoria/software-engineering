@@ -43,6 +43,7 @@ class JogadorActor(DogPlayerInterface):
             messagebox.showinfo(message=message)
 
         elif code == "2":
+            messagebox.showinfo(message=message)
             players = start_status.get_players()
 
             self.jogo.inicializar_jogo(players)
@@ -59,7 +60,6 @@ class JogadorActor(DogPlayerInterface):
 
         players = start_status.get_players()
         self.jogo.inicializar_jogo(players)
-        self.interface.atualizar_elementos()
 
 
     def receive_withdrawal_notification(self):

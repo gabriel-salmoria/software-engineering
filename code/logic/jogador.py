@@ -83,7 +83,7 @@ class Jogador:
                         mesa.pecas.append(peca.int)
 
                     peca.int.atualizar_posicao(local, x, y)
-                    self.jogo.mesa.pecas_dispostas[x][y] = peca
+                    self.jogo.mesa.pecas_dispostas[y][x] = peca
                     self.pecasMao.remove(peca)
 
                     return
