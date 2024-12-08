@@ -28,7 +28,6 @@ class JogadorActor(DogPlayerInterface):
         self.jogo.identificar_jogada(a_move)
 
 
-    # 99% de acordo com os diagramas
     def start_match(self):
         status_jogo = self.jogo.receber_status_partida()
 
@@ -53,7 +52,6 @@ class JogadorActor(DogPlayerInterface):
             self.dog_server_interface.send_move(self.jogo.jogada_atual)
 
 
-    # de acordo com os diagramas
     def receive_start(self, start_status):
         message = start_status.get_message()
         messagebox.showinfo(message=message)
@@ -66,24 +64,20 @@ class JogadorActor(DogPlayerInterface):
         self.jogo.abandonar_partida()
 
 
-    # inutil ainda.
     def reiniciar_jogo(self):
         status_jogo = self.jogo.receber_status_partida()
 
-        self.jogo.reiniciar_elementos()
+        if status_jogo == "2" or status_jogo == "3":
+            self.jogo.reiniciar_elementos()
 
-        self.dog_server_interface.send_move({
-            "match_status": "fodase",
-            "tipo" : "partida reiniciada"
-            })
+            self.dog_server_interface.send_move({
+                "match_status": self.jogo.status_partida,
+                "tipo" : "partida reiniciada"
+                })
 
-        self.jogo.turnoAtual = True
-        self.jogo.listaJogadores[0].seu_turno = True
+            self.jogo.turnoAtual = True
+            self.jogo.listaJogadores[0].seu_turno = True
 
-        self.dog_server_interface.send_move(self.jogo.jogada_atual)
-
-
-
-
+            self.dog_server_interface.send_move(self.jogo.jogada_atual)
 
 JogadorActor()

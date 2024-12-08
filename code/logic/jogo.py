@@ -13,7 +13,7 @@ class Jogo:
         self.listaJogadores = [Jogador(self) for _ in range(2)]
         self.mesa = Mesa()
         self.bancoDePecas = BancoDePecas(self)
-        self.status_partida = 0
+        self.status_partida = "0"
         self.jogada_atual = None
         self.estado_anterior = None
         self.turnoAtual = False
@@ -155,6 +155,7 @@ class Jogo:
 
     def abandonar_partida(self):
         messagebox.showinfo(message="O jogador adversario desistiu da partida.")
+        self.status_partida = "6"
         self.turnoAtual = False
 
 
@@ -246,6 +247,7 @@ class Jogo:
 
 
     def inicializar_jogo(self, players):
+        self.status_partida = "3"
         for i in range(len(self.listaJogadores)):
             self.listaJogadores[i].inicializar(players[i][0], players[i][2])
             self.interface_jogador.interface.jogadores[i].label.config(text=players[i][0])
@@ -264,36 +266,7 @@ class Jogo:
         return self.status_partida
 
 
-    def reiniciar_jogo(self):
-        self.estado_anterior['jogador1'] = []
-        self.estado_anterior['jogador2'] = []
-        self.estado_anterior['mesa'] = []
-
-        self.reconstruir_estado()
-
-        info = []
-
-        for i in range(2):
-            info.append([
-                self.listaJogadores[i].nome,
-                self.listaJogadores[i].cor
-            ])
-
-        self.listaJogadores = []
-
-        for i in range(2):
-            jogador = Jogador(self)
-            jogador.inicializar(info[i][0], info[i][1])
-            self.listaJogadores.append(jogador)
-
-        self.mesa = Mesa()
-        self.bancoDePecas = BancoDePecas(self)
-        self.cronometro.inciar_cronometro()
-
-        self.interface_jogador.interface.atualizar_elementos()
-
-
-    def efetuar_passagem_vez(self):
+    def passar_vez(self):
         valido = self.validar_jogada()
         dog = self.interface_jogador.dog_server_interface
 
@@ -305,7 +278,7 @@ class Jogo:
                 self.turnoAtual = False
 
             dog.send_move({
-                "match_status" : "fodase",
+                "match_status" : self.status_partida,
                 "tipo" : "vez_passada",
                 })
 
@@ -316,7 +289,7 @@ class Jogo:
             self.receber_estado_elementos()
 
             dog.send_move({
-                "match_status" : "fodase",
+                "match_status" : self.status_partida,
                 "tipo" : "peca_comprada",
                 })
 

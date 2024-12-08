@@ -137,7 +137,7 @@ class InterfacePeca(tk.Label):
         )
 
         actor.dog_server_interface.send_move({
-            "match_status" : "fodase",
+            "match_status" : actor.jogo.status_partida,
             "tipo" : "peca_movida",
             "peca" : peca_info,
             "local" : "mesa",

@@ -15,35 +15,6 @@ class Jogador:
 
 
     def passar_vez(self):
-        seu_turno = self.jogo.verificar_turno()
-        self.jogo.efetuar_passagem_vez()
-        return
-
-        if seu_turno:
-            jogada_valida = self.jogo.validar_jogada()
-
-            if jogada_valida:
-                vencedor = self.get_vencedor()
-
-                if vencedor:
-                    self.jogo.finalizar_partida()
-
-                else:
-                    self.jogo.efetuar_passagem_vez()
-
-            else:
-                self.comprar_peca()
-                self.jogo.efetuar_passagem_vez()
-
-        else:
-            print("nao eh seu turno") # TODO: change
-
-        self.jogo.interface_jogador.send_move( )
-        self.jogo.interface.atualizar_elementos()
-
-
-
-    def efetuar_passagem_vez(self):
         self.jogo.efetuar_passagem_vez()
 
 
