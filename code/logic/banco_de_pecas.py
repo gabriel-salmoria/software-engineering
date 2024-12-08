@@ -99,14 +99,14 @@ class BancoDePecas:
         mao_jogador1 = []
         mao_jogador2 = []
 
-        for i in range(10):
+        for i in range(14):
             peca = self.pegar_peca()
             mao_jogador1.append(peca)
             self.criar_peca_interface(peca, i)
 
         self.jogo.listaJogadores[0].receber_pecas(mao_jogador1)
 
-        for i in range(10):
+        for i in range(14):
             mao_jogador2.append(self.pegar_peca())
 
         print(len(self.pecas))
