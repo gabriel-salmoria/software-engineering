@@ -86,7 +86,7 @@ class InterfacePeca(tk.Label):
 
 
     def no_soltar(self, evento: tk.Event) -> None:
-        turno = self.interface.player_actor.jogo.turnoAtual
+        turno = self.interface.jogo.turnoAtual
 
         if self.verificar_colisao() or not turno:
             self.place(

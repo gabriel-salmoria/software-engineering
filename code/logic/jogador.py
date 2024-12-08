@@ -15,7 +15,7 @@ class Jogador:
 
 
     def passar_vez(self):
-        self.jogo.efetuar_passagem_vez()
+        self.jogo.passar_vez()
 
 
     def colocar_peca(self, peca, local, x, y):
