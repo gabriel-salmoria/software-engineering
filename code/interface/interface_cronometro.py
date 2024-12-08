@@ -38,6 +38,8 @@ class InterfaceCronometro(tk.Label):
 
     def iniciar_cronometro(self):
         self.tempo_atual = self.tempo_maximo
+        self.config(text=f"Tempo: {self.tempo_maximo}")
+
         self.atualizar_cronometro()
 
 
@@ -50,8 +52,7 @@ class InterfaceCronometro(tk.Label):
 
             else:
                 self.config(text="Tempo: 0")
-                print("passei")
-                # self.jogo.listaJogadores[0].passar_vez()
+                self.jogo.listaJogadores[0].passar_vez()
 
         else:
             self.config(text=f"Tempo: {self.tempo_maximo}")

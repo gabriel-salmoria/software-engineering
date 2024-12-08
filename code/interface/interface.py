@@ -103,7 +103,7 @@ class Interface(tk.Tk):
 
 
     def reiniciar_jogo(self):
-        self.jogo.reiniciar_jogo()
+        self.jogo.interface_jogador.reiniciar_jogo()
 
 
     def passar_vez(self):

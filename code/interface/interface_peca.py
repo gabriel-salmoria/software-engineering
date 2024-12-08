@@ -123,8 +123,14 @@ class InterfacePeca(tk.Label):
         self.place(x=novo_x - 10, y=novo_y + 15)
         self.linha, self.coluna = proxima_linha, proxima_coluna
 
+        if self.numero < 0:
+            peca_info = f"{self.numero}_{self.cor}_{self.numero*-1}"
+        else:
+            peca_info = f"{self.numero}_{self.cor}"
+
+
         actor.jogo.listaJogadores[0].colocar_peca(
-            f"{self.numero}-{self.cor}",
+            peca_info,
             "mesa",
             str(proxima_coluna),
             str(proxima_linha)
@@ -133,7 +139,7 @@ class InterfacePeca(tk.Label):
         actor.dog_server_interface.send_move({
             "match_status" : "fodase",
             "tipo" : "peca_movida",
-            "peca" : f"{self.numero}-{self.cor}",
+            "peca" : peca_info,
             "local" : "mesa",
             "x" : str(proxima_coluna),
             "y" : str(proxima_linha)

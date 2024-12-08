@@ -1,6 +1,7 @@
 from random import shuffle
 from interface.interface_peca import InterfacePeca
 from logic.peca_numero import PecaNumero
+from logic.peca_coringa import PecaCoringa
 
 class BancoDePecas:
     def __init__(self, jogo):
@@ -48,7 +49,7 @@ class BancoDePecas:
     def comprar_peca(self):
         peca = self.pecas[0]
         self.pecas.remove(peca)
-        self.criar_peca_interface(peca, 0)
+        self.criar_peca_interface(peca, 49)
 
         return peca
 
@@ -59,15 +60,28 @@ class BancoDePecas:
     def criar_baralho(self):
         valores = list(range(1, 14))
         cores = ['red', 'blue', 'green', 'yellow']
+        coringas = list(range(1,5))
 
         baralho = [PecaNumero(valor, cor) for valor in valores for cor in cores for _ in range(2)]
-        print(len(baralho))
+
+        for i in range(4):
+            for _ in range(2):
+                peca = PecaCoringa(coringas[i]*-1, cores[i], coringas[i])
+                baralho.append(peca)
+
         
         shuffle(baralho)
 
         self.pecas = baralho
 
-        estado_baralho = ",".join([f"{peca.valor}-{peca.cor}" for peca in baralho])
+        estado_baralho = ""
+        for peca in baralho:
+            if peca.valor > 0:
+                estado_baralho += f"{peca.valor}_{peca.cor},"
+            else:
+                estado_baralho += f"{peca.valor}_{peca.cor}_{peca.tipoCoringa},"
+
+
 
         self.jogo.jogada_atual = {
             "match_status": "fodase",
@@ -85,15 +99,17 @@ class BancoDePecas:
         mao_jogador1 = []
         mao_jogador2 = []
 
-        for i in range(14):
+        for i in range(10):
             peca = self.pegar_peca()
             mao_jogador1.append(peca)
             self.criar_peca_interface(peca, i)
 
         self.jogo.listaJogadores[0].receber_pecas(mao_jogador1)
 
-        for i in range(14):
+        for i in range(10):
             mao_jogador2.append(self.pegar_peca())
+
+        print(len(self.pecas))
 
         self.jogo.listaJogadores[1].receber_pecas(mao_jogador2)
         self.jogo.receber_estado_elementos()

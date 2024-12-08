@@ -38,7 +38,7 @@ class Jogador:
         else:
             print("nao eh seu turno") # TODO: change
 
-        self.jogo.interface_jogador.send_move()
+        self.jogo.interface_jogador.send_move( )
         self.jogo.interface.atualizar_elementos()
 
 
@@ -47,10 +47,13 @@ class Jogador:
         self.jogo.efetuar_passagem_vez()
 
 
-    def colocar_peca(self, peca, local, x: int, y: int):
-        valor, cor = peca.split("-")
+    def colocar_peca(self, peca, local, x, y):
+        peca_info = peca.split("_")
+        cor, valor = peca_info[1], peca_info[0]
         pecas_dispostas= self.jogo.mesa.pecas_dispostas
+
         x, y = int(x), int(y)
+
         if local == "mesa":
             for i in range(len(pecas_dispostas)):
                 for j in range(len(pecas_dispostas[0])):
@@ -63,7 +66,7 @@ class Jogador:
                         return
 
             for peca in self.pecasMao:
-                if str(peca.valor) == valor and str(peca.cor) == cor:
+                if str(peca.valor).strip() == str(valor).strip() and str(peca.cor).strip() == str(cor).strip():
                     if type(peca.int) != InterfacePeca:
                         interface = self.jogo.interface_jogador.interface
                         mesa = interface.mesa_principal

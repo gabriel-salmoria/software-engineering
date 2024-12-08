@@ -1,4 +1,5 @@
 from logic.banco_de_pecas import BancoDePecas
+from logic.peca_coringa import PecaCoringa
 from logic.peca_numero import PecaNumero
 from interface.interface_mesa import InterfaceMesa
 from interface.interface_peca import InterfacePeca
@@ -52,8 +53,13 @@ class Jogo:
 
 
     def traduzir_peca(self, peca):
-        valor, cor = peca.valor, peca.cor
-        nova = PecaNumero(valor, cor)
+        if isinstance(peca, PecaCoringa):
+            valor, cor, tipo_coringa = peca.valor, peca.cor, peca.tipoCoringa
+            nova = PecaCoringa(valor, cor, tipo_coringa)
+        else:
+            valor, cor = peca.valor, peca.cor
+            nova = PecaNumero(valor, cor)
+
 
         if peca.int is None:
             return nova, None
@@ -92,6 +98,7 @@ class Jogo:
 
 
         self.pecas_dispostas = [[ None for _ in range(self.mesa.colunas)] for _ in range(self.mesa.linhas)] 
+
         for peca in suporte.pecas:
             peca.destroy()
         for peca in inter_mesa.pecas:
@@ -155,7 +162,7 @@ class Jogo:
         message = "O jogo acabou, o jogador: "
         message += self.receber_nome_vencedor()
         message += "venceu!"
-        messagebox.showinfo(message="")
+        messagebox.showinfo(message=message)
         self.turnoAtual = False
 
 
@@ -167,10 +174,23 @@ class Jogo:
 
     def receber_nome_vencedor(self) -> str:
         for jogador in self.listaJogadores:
-            if jogador.vencedor:
+            if jogador.get_vencedor():
                 return jogador.nome
 
         return ""
+
+    def reiniciar_elementos(self):
+        estado_jogo = {}
+
+        estado_jogo['jogador1'] = [] 
+        estado_jogo['jogador2'] = []
+        estado_jogo['mesa'] = []
+
+        self.estado_anterior = estado_jogo
+        self.bancoDePecas = BancoDePecas(self)
+        self.reconstruir_estado()
+        self.bancoDePecas.criar_baralho()
+        self.receber_estado_elementos()
 
 
     def identificar_jogada(self, jogada):
@@ -178,7 +198,6 @@ class Jogo:
             peca, local = jogada["peca"], jogada["local"]
             x, y = jogada["x"], jogada["y"]
             
-            print("colocar peca")
             self.listaJogadores[1].colocar_peca(peca, local, x, y)
 
 
@@ -188,9 +207,15 @@ class Jogo:
 
 
         elif jogada["tipo"] == "vez_passada":
-            self.inverter_turno()
-            self.receber_estado_elementos()
-            self.cronometro.iniciar_cronometro()
+            vencedor = self.verificar_partida_encerrada()
+
+            if vencedor:
+                self.finalizar_partida()
+
+            else:
+                self.receber_estado_elementos()
+                self.inverter_turno()
+                self.cronometro.iniciar_cronometro()
 
 
         elif jogada["tipo"] == "peca_comprada":
@@ -198,6 +223,11 @@ class Jogo:
             self.listaJogadores[1].pegar_peca()
             self.inverter_turno()
             self.cronometro.iniciar_cronometro()
+
+        elif jogada["tipo"] == "partida_reiniciada":
+            self.turnoAtual = False
+            self.listaJogadores[1].seu_turno = True
+            self.interface_jogador.reiniciar_elementos()
 
 
         self.interface_jogador.interface.atualizar_elementos()
@@ -258,6 +288,7 @@ class Jogo:
 
         self.mesa = Mesa()
         self.bancoDePecas = BancoDePecas(self)
+        self.cronometro.inciar_cronometro()
 
         self.interface_jogador.interface.atualizar_elementos()
 
@@ -267,7 +298,11 @@ class Jogo:
         dog = self.interface_jogador.dog_server_interface
 
         if valido:
-            print("valido")
+            vencedor = self.verificar_partida_encerrada()
+
+            if vencedor:
+                messagebox.showinfo(message="Parabéns, você venceu!")
+                self.turnoAtual = False
 
             dog.send_move({
                 "match_status" : "fodase",
@@ -284,8 +319,8 @@ class Jogo:
                 "match_status" : "fodase",
                 "tipo" : "peca_comprada",
                 })
-            self.inverter_turno()
 
+        self.inverter_turno()
 
         self.interface_jogador.interface.atualizar_elementos()
 
@@ -303,8 +338,16 @@ class Jogo:
         pecas_str = string_codificada.split(',')
 
         for i, peca_str in enumerate(pecas_str):
-            valor, cor = peca_str.split('-')
-            peca = PecaNumero(int(valor), cor)
+            info = peca_str.split('_')
+
+            if len(info) == 2:
+                peca = PecaNumero(int(info[0]), info[1])
+
+            elif len(info) == 3:
+                peca = PecaCoringa(int(info[0]), info[1], int(info[2]))
+
+            else:
+                continue
             
             if i < 14:
                 pecas.append(peca)

@@ -70,8 +70,18 @@ class JogadorActor(DogPlayerInterface):
     def reiniciar_jogo(self):
         status_jogo = self.jogo.receber_status_partida()
 
-        if status_jogo == 2 or status_jogo == 6:
-            self.reiniciar_jogo()
+        self.jogo.reiniciar_elementos()
+
+        self.dog_server_interface.send_move({
+            "match_status": "fodase",
+            "tipo" : "partida reiniciada"
+            })
+
+        self.jogo.turnoAtual = True
+        self.jogo.listaJogadores[0].seu_turno = True
+
+        self.dog_server_interface.send_move(self.jogo.jogada_atual)
+
 
 
 
