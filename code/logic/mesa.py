@@ -10,6 +10,7 @@ class Mesa:
 
 
     def validar_mesa(self) -> bool:
+        self.atualizando = True
         for i in range(self.linhas):
             j = 0
             while j != self.colunas:
@@ -21,6 +22,8 @@ class Mesa:
                 j = ret
 
                 if len(proximo_bloco) < 3:
+                    self.atualizando = True
+                    self.valido = False
                     return False
 
                 if (self.grupo_valido(proximo_bloco)):
@@ -29,8 +32,12 @@ class Mesa:
                 elif (self.sequencia_valida(proximo_bloco)):
                     continue
 
+                self.atualizando = False
+                self.valido = False
                 return False
 
+        self.atualizando = False
+        self.valido = True
         return True
 
 
@@ -48,52 +55,53 @@ class Mesa:
             
 
     def grupo_valido(self, bloco: list) -> bool:
-        usou_coringa = False
+        coringa_usado = False
+        valido = True
         numero_sequencia = bloco[0].valor
-        print(numero_sequencia)
         cores = []
 
         for peca in range(len(bloco)):
             if bloco[peca].valor == -1:
-                if usou_coringa == False:
-                    usou_coringa = True
+                if coringa_usado == False:
+                    coringa_usado = True
                 else:
-                    return False
+                    valido = False
 
                 continue
 
             if bloco[peca].valor != numero_sequencia:
-                return False
+                valido = False
 
             if bloco[peca].cor in cores:
-                return False
+                valido = False
             else:
                 cores.append(bloco[peca].cor)
 
-        return True
+        return valido
 
 
     def sequencia_valida(self, bloco: list) -> bool:
-        usou_coringa = False
+        coringa_usado = False
+        valido = True
+
         n_operando = 1
         cor_sequencia = bloco[0].cor
-        print(cor_sequencia)
         peca_anterior = bloco[0].valor - 1
 
 
         for peca in range(len(bloco)):
             if bloco[peca].valor != -1:
                 if bloco[peca].cor != cor_sequencia:
-                    return False
+                    valido = False
 
                 if bloco[peca].valor == peca_anterior + n_operando:
                     peca_anterior = bloco[peca].valor
 
             else:
-                if usou_coringa == True:
-                    return False
+                if coringa_usado == True:
+                    valido = False
 
-                usou_coringa = True
+                coringa_usado = True
                 if bloco[peca].tipoCoringa == 1:
                     peca_anterior += 1
 
@@ -104,9 +112,9 @@ class Mesa:
                     peca_anterior += 1
                     n_operando = -1
 
-                elif bloco[peca].tipoCoringa == 2:
+                elif bloco[peca].tipoCoringa == 4:
                     cor_sequencia = bloco[peca+1].cor
 
                 continue
 
-        return True
+        return valido

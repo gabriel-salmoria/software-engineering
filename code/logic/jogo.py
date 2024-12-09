@@ -268,7 +268,7 @@ class Jogo:
 
     def passar_vez(self):
         valido = self.validar_jogada()
-        dog = self.interface_jogador.dog_server_interface
+        dog = self.interface_jogador.dogActor
 
         if valido:
             vencedor = self.verificar_partida_encerrada()

@@ -7,14 +7,14 @@ from tkinter import messagebox
 from tkinter import simpledialog
 
 
-class JogadorActor(DogPlayerInterface):
+class InterfaceJogador(DogPlayerInterface):
     def __init__(self):
         self.interface = Interface(self)
         self.nome_jogador = simpledialog.askstring(title="Nome do Jogador", prompt="Qual o seu nome?")
-        self.dog_server_interface = DogActor()
+        self.dogActor = DogActor()
         self.estado = None
 
-        message = self.dog_server_interface.initialize(self.nome_jogador, self)
+        message = self.dogActor.initialize(self.nome_jogador, self)
         messagebox.showinfo(message=message)
 
         self.interface.atualizar_elementos()
@@ -34,7 +34,7 @@ class JogadorActor(DogPlayerInterface):
         if status_jogo == 2 or status_jogo == 3:
             return
 
-        start_status = self.dog_server_interface.start_match(2)
+        start_status = self.dogActor.start_match(2)
         code = start_status.get_code()
         message = start_status.get_message()
 
@@ -49,7 +49,7 @@ class JogadorActor(DogPlayerInterface):
             self.jogo.bancoDePecas.criar_baralho()
             self.jogo.receber_estado_elementos()
 
-            self.dog_server_interface.send_move(self.jogo.jogada_atual)
+            self.dogActor.send_move(self.jogo.jogada_atual)
 
 
     def receive_start(self, start_status):
@@ -70,7 +70,7 @@ class JogadorActor(DogPlayerInterface):
         if status_jogo == "2" or status_jogo == "3":
             self.jogo.reiniciar_elementos()
 
-            self.dog_server_interface.send_move({
+            self.dogActor.send_move({
                 "match_status": self.jogo.status_partida,
                 "tipo" : "partida reiniciada"
                 })
@@ -78,6 +78,6 @@ class JogadorActor(DogPlayerInterface):
             self.jogo.turnoAtual = True
             self.jogo.listaJogadores[0].seu_turno = True
 
-            self.dog_server_interface.send_move(self.jogo.jogada_atual)
+            self.dogActor.send_move(self.jogo.jogada_atual)
 
-JogadorActor()
+InterfaceJogador()
