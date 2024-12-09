@@ -61,7 +61,7 @@ class Mesa:
         cores = []
 
         for peca in range(len(bloco)):
-            if bloco[peca].valor == -1:
+            if bloco[peca].valor < 0:
                 if coringa_usado == False:
                     coringa_usado = True
                 else:
@@ -90,7 +90,7 @@ class Mesa:
 
 
         for peca in range(len(bloco)):
-            if bloco[peca].valor != -1:
+            if bloco[peca].valor > 0:
                 if bloco[peca].cor != cor_sequencia:
                     valido = False
 

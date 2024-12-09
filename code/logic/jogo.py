@@ -228,7 +228,7 @@ class Jogo:
         elif jogada["tipo"] == "partida_reiniciada":
             self.turnoAtual = False
             self.listaJogadores[1].seu_turno = True
-            self.interface_jogador.reiniciar_elementos()
+            self.reiniciar_elementos()
 
 
         self.interface_jogador.interface.atualizar_elementos()
