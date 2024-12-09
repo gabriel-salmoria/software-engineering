@@ -18,21 +18,7 @@ class Interface(tk.Tk):
 
         self.player_actor = jogador_actor
 
-        self.create_menu_bar()
         self.criar_elementos_interface()
-
-
-    def create_menu_bar(self):
-        menubar = tk.Menu(self)
-        menu_jogo = tk.Menu(menubar, tearoff=0)
-
-        menu_jogo.add_command(label="Iniciar Jogo", command=self.start_match)
-        menu_jogo.add_command(label="Reiniciar Jogo", command=self.reiniciar_jogo)
-        menu_jogo.add_command(label="Sair", command=self.quit)
-
-        menubar.add_cascade(label="Jogo", menu=menu_jogo)
-
-        self.config(menu=menubar)
 
 
     def criar_elementos_interface(self):
@@ -82,6 +68,17 @@ class Interface(tk.Tk):
             command=self.passar_vez
         )
         self.botao.place(relx=0.95, rely=0.95, anchor="center")
+
+        menubar = tk.Menu(self)
+        menu_jogo = tk.Menu(menubar, tearoff=0)
+
+        menu_jogo.add_command(label="Iniciar Jogo", command=self.start_match)
+        menu_jogo.add_command(label="Reiniciar Jogo", command=self.reiniciar_jogo)
+        menu_jogo.add_command(label="Sair", command=self.quit)
+
+        menubar.add_cascade(label="Jogo", menu=menu_jogo)
+
+        self.config(menu=menubar)
 
 
     def atualizar_elementos(self):

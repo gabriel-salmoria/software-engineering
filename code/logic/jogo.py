@@ -267,6 +267,9 @@ class Jogo:
 
 
     def passar_vez(self):
+        if not self.turnoAtual:
+            return
+
         valido = self.validar_jogada()
         dog = self.interface_jogador.dogActor
 
@@ -294,7 +297,6 @@ class Jogo:
                 })
 
         self.inverter_turno()
-
         self.interface_jogador.interface.atualizar_elementos()
 
 

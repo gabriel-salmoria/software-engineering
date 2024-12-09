@@ -92,8 +92,6 @@ class BancoDePecas:
         self.efetuar_distribuicao_pecas()
 
 
-
-    # ta de acordo com os diagramas
     def efetuar_distribuicao_pecas(self):
 
         mao_jogador1 = []
@@ -108,8 +106,6 @@ class BancoDePecas:
 
         for i in range(14):
             mao_jogador2.append(self.pegar_peca())
-
-        print(len(self.pecas))
 
         self.jogo.listaJogadores[1].receber_pecas(mao_jogador2)
         self.jogo.receber_estado_elementos()
